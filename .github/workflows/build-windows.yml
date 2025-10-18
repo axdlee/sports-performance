@@ -11,6 +11,10 @@ on:
         required: false
         default: '1.3.1'
 
+# 添加权限配置
+permissions:
+  contents: write  # 允许创建 Release 和上传文件
+
 jobs:
   build-windows:
     name: Build Windows EXE
