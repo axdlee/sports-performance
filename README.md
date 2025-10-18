@@ -221,11 +221,13 @@ python build.py
 ## 📚 相关文档
 
 - [BUILD_GUIDE.md](BUILD_GUIDE.md) - 完整的打包构建指南
+- [DATA_STORAGE.md](DATA_STORAGE.md) - 数据存储说明
+- [PACKAGING_SUMMARY.md](PACKAGING_SUMMARY.md) - 打包系统完成总结
 - [使用说明.md](使用说明.md) - 用户使用手册
 - [项目完成报告.md](项目完成报告.md) - 项目开发总结
 
 ---
 
 **开发者**: Sports Performance Assessment Team  
-**版本**: 1.3.0  
+**版本**: 1.3.1  
 **最后更新**: 2025-10-18
