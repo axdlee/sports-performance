@@ -55,10 +55,17 @@ jobs:
           if ([string]::IsNullOrEmpty($version)) {
             $version = "1.3.1"
           }
-          $zipName = "体育成绩评估系统-v$version-Windows.zip"
-          Compress-Archive -Path "dist/installer_windows/*" -DestinationPath "dist/$zipName"
-          Write-Host "✓ 创建压缩包: $zipName"
-        shell: powershell
+          $zipName = "SportsPerformance-v$version-Windows.zip"
+          Compress-Archive -Path "dist/installer_windows/*" -DestinationPath "dist/$zipName" -Force
+          Write-Host "Created archive: $zipName"
+          
+          # 重命名为中文名称（可选）
+          $chineseZipName = [System.Text.Encoding]::UTF8.GetString([System.Text.Encoding]::UTF8.GetBytes("体育成绩评估系统-v$version-Windows.zip"))
+          if (Test-Path "dist/$zipName") {
+            Copy-Item "dist/$zipName" "dist/$chineseZipName" -Force
+            Write-Host "Also created Chinese name version"
+          }
+        shell: pwsh
       
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
@@ -78,7 +85,7 @@ jobs:
             ## 体育成绩评估系统 Windows 安装包
             
             ### 下载说明
-            - 下载 `体育成绩评估系统-*-Windows.zip`
+            - 下载 `SportsPerformance-*-Windows.zip`
             - 解压到任意位置
             - 运行 `体育成绩评估系统.exe` 或使用 `启动程序.bat`
             

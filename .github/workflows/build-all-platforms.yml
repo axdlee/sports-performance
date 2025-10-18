@@ -43,9 +43,10 @@ jobs:
           if ([string]::IsNullOrEmpty($version)) {
             $version = "1.3.1"
           }
-          $zipName = "体育成绩评估系统-v$version-Windows.zip"
-          Compress-Archive -Path "dist/installer_windows/*" -DestinationPath "dist/$zipName"
-        shell: powershell
+          $zipName = "SportsPerformance-v$version-Windows.zip"
+          Compress-Archive -Path "dist/installer_windows/*" -DestinationPath "dist/$zipName" -Force
+          Write-Host "Created archive: $zipName"
+        shell: pwsh
       
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
@@ -87,7 +88,8 @@ jobs:
             version="1.3.1"
           fi
           cd dist/installer_macos
-          zip -r "../体育成绩评估系统-v${version}-macOS.zip" .
+          zip -r "../SportsPerformance-v${version}-macOS.zip" .
+          echo "Created archive: SportsPerformance-v${version}-macOS.zip"
       
       - name: 上传构建产物
         uses: actions/upload-artifact@v4
@@ -120,12 +122,12 @@ jobs:
             ### 下载说明
             
             #### Windows 用户
-            - 下载 `体育成绩评估系统-*-Windows.zip`
+            - 下载 `SportsPerformance-*-Windows.zip`
             - 解压到任意位置
             - 运行 `体育成绩评估系统.exe` 或 `启动程序.bat`
             
             #### macOS 用户
-            - 下载 `体育成绩评估系统-*-macOS.zip`
+            - 下载 `SportsPerformance-*-macOS.zip`
             - 解压后将 `.app` 拖到应用程序文件夹
             - 首次打开右键选择"打开"
             
