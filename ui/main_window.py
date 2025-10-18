@@ -5,6 +5,8 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+import json
+import os
 from typing import Optional
 from models.user import User
 from ui.login_window import LoginWindow
@@ -17,11 +19,15 @@ from services.data_manager import DataManager
 class MainWindow:
     """主窗口类"""
     
+    # 上次登录用户配置文件路径
+    LAST_USER_FILE = "data/last_user.json"
+    
     def __init__(self):
         self.data_manager = DataManager()
         self.current_user: Optional[User] = None
         
         self.setup_ui()
+        self.load_last_user()  # 启动时自动加载上次登录的用户
     
     def setup_ui(self):
         """设置用户界面"""
@@ -144,6 +150,7 @@ class MainWindow:
     def on_login_success(self, user: User):
         """登录成功回调"""
         self.current_user = user
+        self.save_last_user(user.id)  # 保存用户ID
         self.update_ui_after_login()
         self.status_var.set(f"✅ 欢迎，{user.name}！")
     
@@ -170,8 +177,9 @@ class MainWindow:
             self.report_button.config(state=tk.NORMAL, bg=self.report_button_enabled_bg,
                                      fg="white", cursor="hand2")
             
-            # 禁用登录按钮并更新样式
-            self.login_button.config(state=tk.DISABLED, bg="#bdc3c7", fg="#7f8c8d", cursor="")
+            # 将登录按钮改为"切换用户"
+            self.login_button.config(state=tk.NORMAL, bg="#9b59b6", fg="white", 
+                                    cursor="hand2", text="🔄 切换用户")
     
     def show_input_window(self):
         """显示成绩录入窗口"""
@@ -215,9 +223,47 @@ class MainWindow:
         report_window = ReportWindow(self.current_user, self.window)
         report_window.show()
     
+    def save_last_user(self, user_id: str):
+        """保存上次登录的用户ID到配置文件"""
+        try:
+            # 确保data目录存在
+            os.makedirs(os.path.dirname(self.LAST_USER_FILE), exist_ok=True)
+            
+            config = {"last_user_id": user_id}
+            with open(self.LAST_USER_FILE, 'w', encoding='utf-8') as f:
+                json.dump(config, f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"保存上次登录用户失败: {e}")
+    
+    def load_last_user(self):
+        """加载上次登录的用户"""
+        try:
+            if os.path.exists(self.LAST_USER_FILE):
+                with open(self.LAST_USER_FILE, 'r', encoding='utf-8') as f:
+                    config = json.load(f)
+                    last_user_id = config.get("last_user_id")
+                    
+                    if last_user_id:
+                        # 尝试从DataManager加载用户
+                        user = self.data_manager.find_user_by_id(last_user_id)
+                        if user:
+                            self.current_user = user
+                            self.update_ui_after_login()
+                            self.status_var.set(f"✅ 自动登录: {user.name}")
+                            return
+            
+            # 如果没有上次用户或加载失败，显示默认状态
+            self.status_var.set("💡 欢迎使用体育成绩评估系统")
+        except Exception as e:
+            print(f"加载上次登录用户失败: {e}")
+            self.status_var.set("💡 欢迎使用体育成绩评估系统")
+    
     def exit_application(self):
         """退出应用程序"""
         if messagebox.askyesno("确认退出", "确定要退出程序吗？"):
+            # 退出时保存当前用户（如果已登录）
+            if self.current_user:
+                self.save_last_user(self.current_user.id)
             self.window.quit()
     
     def run(self):
