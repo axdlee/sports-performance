@@ -1,5 +1,9 @@
 # 🏃‍♂️ 体育成绩评估系统
 
+<p align="center">
+  <img src="assets/icon_256x256.png" alt="体育成绩评估系统图标" width="128" height="128">
+</p>
+
 ## 📋 项目简介
 
 体育成绩评估系统是一款专为中学/高校设计的现代化桌面端体育成绩管理软件，支持macOS和Windows平台。系统基于《国家学生体质健康标准》开发，提供完整的成绩录入、自动计算、分析报告和趋势分析功能。
@@ -176,7 +180,16 @@ python build.py
 
 ## 📝 更新日志
 
-### v1.3.1 (2025-10-18)
+### v1.3.2 (2025-10-18)
+- 🎨 新增专业应用图标
+  - 蓝色渐变体育主题设计
+  - 跨平台支持（macOS .icns 和 Windows .ico）
+  - 包含完整的 iconset 和多尺寸 PNG
+- ✅ 新增 `create_icon.py` 图标生成脚本
+- ✅ 新增 `ICON_GUIDE.md` 图标使用指南
+- ✅ 更新打包配置自动应用图标
+
+### v1.3.1 (2024-10-18)
 - 🐛 修复打包后数据目录只读问题
   - 数据现在存储在系统用户目录
   - macOS: `~/Library/Application Support/SportsPerformance/`
@@ -223,6 +236,7 @@ python build.py
 - [BUILD_GUIDE.md](BUILD_GUIDE.md) - 完整的打包构建指南
 - [DATA_STORAGE.md](DATA_STORAGE.md) - 数据存储说明
 - [PACKAGING_SUMMARY.md](PACKAGING_SUMMARY.md) - 打包系统完成总结
+- [ICON_GUIDE.md](ICON_GUIDE.md) - 应用图标使用指南
 - [使用说明.md](使用说明.md) - 用户使用手册
 - [项目完成报告.md](项目完成报告.md) - 项目开发总结
 
