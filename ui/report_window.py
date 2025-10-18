@@ -141,15 +141,24 @@ class ReportWindow:
         canvas = tk.Canvas(current_frame, bg=self.THEME_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(current_frame, orient="vertical", command=canvas.yview)
         
-        # 创建可滚动框架 - 使用居中布局但不限制高度
-        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=180, pady=15)
+        # 创建可滚动框架 - 使用自适应居中布局
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, pady=15)
         
         scrollable_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
         
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        # 使用动态居中窗口创建方式
+        def center_window(event=None):
+            canvas.update_idletasks()
+            canvas_width = canvas.winfo_width()
+            scrollable_width = scrollable_frame.winfo_reqwidth()
+            x = (canvas_width - scrollable_width) // 2
+            canvas.coords(canvas_window, x, 0)
+        
+        canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
+        canvas.bind('<Configure>', center_window)
         canvas.configure(yscrollcommand=scrollbar.set)
         
         # 绑定鼠标滚轮事件
@@ -244,15 +253,24 @@ class ReportWindow:
         canvas = tk.Canvas(analysis_frame, bg=self.THEME_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(analysis_frame, orient="vertical", command=canvas.yview)
         
-        # 创建可滚动框架 - 使用居中布局但不限制高度
-        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=180, pady=15)
+        # 创建可滚动框架 - 使用自适应居中布局
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, pady=15)
         
         scrollable_frame.bind(
             "<Configure>",
             lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
         )
         
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        # 使用动态居中窗口创建方式
+        def center_window(event=None):
+            canvas.update_idletasks()
+            canvas_width = canvas.winfo_width()
+            scrollable_width = scrollable_frame.winfo_reqwidth()
+            x = (canvas_width - scrollable_width) // 2
+            canvas.coords(canvas_window, x, 0)
+        
+        canvas_window = canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
+        canvas.bind('<Configure>', center_window)
         canvas.configure(yscrollcommand=scrollbar.set)
         
         # 绑定鼠标滚轮
@@ -316,11 +334,34 @@ class ReportWindow:
     
     def setup_trend_tab(self, notebook):
         """设置历史趋势标签页"""
-        trend_frame = tk.Frame(notebook, bg=self.THEME_BG, padx=15, pady=15)
+        trend_frame = tk.Frame(notebook, bg=self.THEME_BG)
         notebook.add(trend_frame, text="📉 历史趋势")
         
+        # 创建Canvas和Scrollbar
+        canvas = tk.Canvas(trend_frame, bg=self.THEME_BG, highlightthickness=0)
+        scrollbar = ttk.Scrollbar(trend_frame, orient="vertical", command=canvas.yview)
+        
+        # 创建可滚动框架
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, pady=15)
+        
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="n")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # 绑定鼠标滚轮
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
         # 趋势图表卡片
-        chart_card, chart_content = self.create_card_frame(trend_frame, "📈 成绩趋势图")
+        chart_card, chart_content = self.create_card_frame(scrollable_frame, "📈 成绩趋势图")
         chart_card.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
         
         # 图表容器
@@ -361,7 +402,7 @@ class ReportWindow:
         export_btn.pack(side=tk.LEFT)
         
         # 历史记录卡片
-        history_card, history_content = self.create_card_frame(trend_frame, "📜 历史记录列表")
+        history_card, history_content = self.create_card_frame(scrollable_frame, "📜 历史记录列表")
         history_card.pack(fill=tk.BOTH, expand=True)
         
         # 历史记录表格
@@ -451,7 +492,7 @@ class ReportWindow:
             scrollable_frame, "🌟 生活与训练建议", self.THEME_SUCCESS)
         life_card.pack(fill=tk.X, pady=(0, 15))
         
-        self.life_text = tk.Text(life_content, wrap=tk.WORD, height=8, 
+        self.life_text = tk.Text(life_content, wrap=tk.WORD, height=12, 
                                 font=("Microsoft YaHei", 10), bg=self.THEME_CARD, 
                                 fg=self.THEME_TEXT_DARK, relief=tk.FLAT, state=tk.DISABLED)
         self.life_text.pack(fill=tk.BOTH, expand=True)
