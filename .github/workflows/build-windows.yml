@@ -38,13 +38,13 @@ jobs:
       - name: 检查构建结果
         run: |
           if (Test-Path "dist/installer_windows") {
-            Write-Host "✓ Windows 安装包构建成功"
+            Write-Host "Build succeeded - installer_windows found"
             Get-ChildItem -Path "dist/installer_windows" -Recurse | Select-Object FullName
           } else {
-            Write-Error "✗ 构建失败：未找到安装包目录"
+            Write-Error "Build failed - installer_windows not found"
             exit 1
           }
-        shell: powershell
+        shell: pwsh
       
       - name: 创建 ZIP 压缩包
         run: |
