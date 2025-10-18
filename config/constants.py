@@ -399,6 +399,11 @@ INPUT_HINTS = {
     "spinbox_hint": "💡 使用上下箭头或直接输入数字",
     "required_time": "请输入必选项成绩",
     "seconds_range": "秒钟数必须小于60",
+    "category1_required": "请选择第一类选考项目",
+    "category1_score": "请输入第一类选考成绩",
+    "category2_required": "请选择第二类选考项目",
+    "category2_score": "请输入第二类选考成绩",
+    # 保留旧的key作为兼容
     "select_category1": "请选择第一类选考项目",
     "input_category1": "请输入第一类选考成绩",
     "select_category2": "请选择第二类选考项目",
@@ -407,6 +412,7 @@ INPUT_HINTS = {
 
 # 项目标签配置
 PROJECT_LABELS = {
+    # 完整标签（带单位）
     "50m": "50米跑 (秒)",
     "sit_reach": "坐位体前屈 (厘米)",
     "standing_jump": "立定跳远 (厘米)",
@@ -414,7 +420,20 @@ PROJECT_LABELS = {
     "sit_ups": "仰卧起坐 (次)",
     "basketball": "篮球运球 (秒)",
     "football": "足球运球 (秒)",
-    "volleyball": "排球垫球 (次)"
+    "volleyball": "排球垫球 (次)",
+    "1000m": "1000米跑 (秒)",
+    "800m": "800米跑 (秒)",
+    # 短标签（不带单位，用于下拉框）
+    "50m_short": "50米跑",
+    "sit_reach_short": "坐位体前屈",
+    "standing_jump_short": "立定跳远",
+    "pull_ups_short": "引体向上",
+    "sit_ups_short": "仰卧起坐",
+    "basketball_short": "篮球运球",
+    "football_short": "足球运球",
+    "volleyball_short": "排球垫球",
+    "1000m_short": "1000米跑",
+    "800m_short": "800米跑"
 }
 
 # 性别图标和文本

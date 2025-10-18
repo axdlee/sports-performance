@@ -288,27 +288,27 @@ class InputWindow:
         """根据性别更新界面"""
         if self.user.gender == GENDER_MALE:
             # 男生必选项
-            self.required_label.config(text="1000米跑")
+            self.required_label.config(text=PROJECT_LABELS["1000m_short"])
             self.required_project = "1000m"
             
             # 第一类选考项目
             category1_options = [
-                ("50m", "50米跑"),
-                ("sit_reach", "坐位体前屈"),
-                ("standing_jump", "立定跳远"),
-                ("pull_ups", "引体向上")
+                ("50m", PROJECT_LABELS["50m_short"]),
+                ("sit_reach", PROJECT_LABELS["sit_reach_short"]),
+                ("standing_jump", PROJECT_LABELS["standing_jump_short"]),
+                ("pull_ups", PROJECT_LABELS["pull_ups_short"])
             ]
         else:
             # 女生必选项
-            self.required_label.config(text="800米跑")
+            self.required_label.config(text=PROJECT_LABELS["800m_short"])
             self.required_project = "800m"
             
             # 第一类选考项目
             category1_options = [
-                ("50m", "50米跑"),
-                ("sit_reach", "坐位体前屈"),
-                ("standing_jump", "立定跳远"),
-                ("sit_ups", "仰卧起坐")
+                ("50m", PROJECT_LABELS["50m_short"]),
+                ("sit_reach", PROJECT_LABELS["sit_reach_short"]),
+                ("standing_jump", PROJECT_LABELS["standing_jump_short"]),
+                ("sit_ups", PROJECT_LABELS["sit_ups_short"])
             ]
         
         # 设置第一类选考选项
@@ -317,9 +317,9 @@ class InputWindow:
         
         # 第二类选考项目
         category2_options = [
-            ("basketball", "篮球运球"),
-            ("football", "足球运球"),
-            ("volleyball", "排球垫球")
+            ("basketball", PROJECT_LABELS["basketball_short"]),
+            ("football", PROJECT_LABELS["football_short"]),
+            ("volleyball", PROJECT_LABELS["volleyball_short"])
         ]
         self.category2_combo['values'] = [option[1] for option in category2_options]
         self.category2_options_map = {option[1]: option[0] for option in category2_options}
@@ -377,15 +377,8 @@ class InputWindow:
         scoring_data = get_scoring_data(self.user.gender)
         standards = scoring_data.get(project_key, [])
         
-        labels = {
-            "50m": "50米跑 (秒)",
-            "sit_reach": "坐位体前屈 (厘米)",
-            "standing_jump": "立定跳远 (厘米)",
-            "pull_ups": "引体向上 (次)",
-            "sit_ups": "仰卧起坐 (次)"
-        }
-        
-        label_text = labels.get(project_key, "")
+        # 使用配置中的标签
+        label_text = PROJECT_LABELS.get(project_key, "")
         
         # 添加范围提示
         if standards:
@@ -406,13 +399,8 @@ class InputWindow:
         scoring_data = get_scoring_data(self.user.gender)
         standards = scoring_data.get(project_key, [])
         
-        labels = {
-            "basketball": "篮球运球 (秒)",
-            "football": "足球运球 (秒)",
-            "volleyball": "排球垫球 (次)"
-        }
-        
-        label_text = labels.get(project_key, "")
+        # 使用配置中的标签
+        label_text = PROJECT_LABELS.get(project_key, "")
         
         # 添加范围提示
         if standards:
