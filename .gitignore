@@ -1,4 +1,50 @@
+# Python
 **/*__pycache__/**
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.spec.bak
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# PyInstaller
+*.spec~
+*.log
+
+# Data files (user data should not be committed)
 /data/
-/dist/
-/build/
+data/users.json
+data/last_user.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Backup files
+*.bak
+*.backup
+*.old

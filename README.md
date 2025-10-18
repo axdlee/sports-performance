@@ -30,43 +30,61 @@
 
 ### 方法一：使用安装包（推荐）
 
-1. **获取安装包**
-   ```bash
-   # 生成安装包
-   python build.py
-   ```
+#### 获取预编译安装包
+直接从 [Releases](../../releases) 下载对应平台的安装包：
+- **macOS**: `体育成绩评估系统-v1.0.0-macOS.dmg` 或 `.app` 文件
+- **Windows**: `体育成绩评估系统-v1.0.0-Windows-Setup.exe` 或压缩包
 
-2. **使用安装包**
-   - **macOS**: 双击 `体育成绩评估系统.app`
-   - **Windows**: 双击 `体育成绩评估系统.exe`
-   - 无需安装Python环境，开箱即用
+#### 自己构建安装包
+```bash
+# 确保在虚拟环境中
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
 
-### 方法二：开发环境运行
+# 运行打包脚本（自动检测平台）
+python build.py
+```
 
-1. **安装依赖**
-   ```bash
-   pip install -r requirements.txt
-   ```
+生成的安装包位于 `dist/installer_macos/` 或 `dist/installer_windows/`
 
-2. **运行程序**
-   ```bash
-   python main.py
-   ```
+详细打包说明请参考 [BUILD_GUIDE.md](BUILD_GUIDE.md)
 
-### 方法三：使用虚拟环境
+#### 安装说明
 
-1. **创建虚拟环境**
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate  # macOS/Linux
-   venv\Scripts\activate     # Windows
-   ```
+**macOS**:
+1. 打开 DMG 文件或解压安装包
+2. 将 "体育成绩评估系统.app" 拖拽到"应用程序"文件夹
+3. 双击运行（首次运行可能需要右键 → 打开）
 
-2. **安装依赖并运行**
-   ```bash
-   pip install -r requirements.txt
-   python main.py
-   ```
+**Windows**:
+1. 运行安装程序或解压压缩包
+2. 双击 "体育成绩评估系统.exe" 运行
+3. 如遇 Windows Defender 拦截，点击"更多信息" → "仍要运行"
+
+### 方法二：从源码运行（开发者）
+
+#### 快速开始
+```bash
+# 克隆项目
+git clone <repository-url>
+cd sports-performance
+
+# 创建虚拟环境
+python3 -m venv venv
+source venv/bin/activate  # macOS/Linux
+venv\Scripts\activate     # Windows
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 运行程序
+python main.py
+```
+
+#### 或直接运行（需已安装依赖）
+```bash
+python main.py
+```
 
 ## 🎨 界面特色
 
@@ -103,10 +121,34 @@ sports-performance/
 
 ## 📋 系统要求
 
-- **Python**: 3.7+ (仅开发环境需要)
-- **操作系统**: macOS 10.14+ / Windows 10+
+### 使用安装包（推荐）
+- **macOS**: 10.13 或更高版本
+- **Windows**: Windows 10 (1809) 或更高版本
 - **内存**: 至少 512MB RAM
 - **存储**: 至少 100MB 可用空间
+- **无需安装 Python 环境**
+
+### 从源码运行（开发者）
+- **Python**: 3.7+ (推荐 3.8-3.11)
+- **操作系统**: macOS 10.13+ / Windows 10+
+- **内存**: 至少 512MB RAM
+- **存储**: 至少 100MB 可用空间
+
+## 📦 打包构建
+
+### 快速打包
+```bash
+# 在虚拟环境中运行
+python build.py
+```
+
+### 详细说明
+参见 [BUILD_GUIDE.md](BUILD_GUIDE.md) 获取完整的打包说明，包括：
+- 跨平台打包配置
+- DMG/安装程序创建
+- 代码签名指南
+- 常见问题解决
+- CI/CD 集成示例
 
 ## 🎯 使用流程
 
@@ -125,17 +167,47 @@ sports-performance/
 
 ## 📝 更新日志
 
-### v1.2.0 (2025-10-18)
+### v1.3.0 (2024-10-18)
+- ✅ 完善跨平台打包机制
+  - 统一的 `sports_performance.spec` 配置文件
+  - 自动化的 `build.py` 打包脚本
+  - 支持 macOS .app bundle 和 DMG 创建
+  - 支持 Windows exe 和 Inno Setup 安装程序
+- ✅ 新增详细的打包文档 `BUILD_GUIDE.md`
+- ✅ 优化构建流程和错误处理
+- ✅ 改进安装包结构和分发说明
+
+### v1.2.0 (2024-10-18)
 - ✅ 优化登录界面，移除学号字段
 - ✅ 改进UI设计，采用现代化配色方案
 - ✅ 修复登录跳转问题
 - ✅ 优化安装包生成，支持真正的应用程序
 
-### v1.1.0 (2025-10-18)
+### v1.1.0 (2024-10-18)
 - ✅ 实现完整的成绩管理功能
 - ✅ 支持历史记录和趋势分析
 - ✅ 添加弱项识别和改进建议
 
-### v1.0.0 (2025-10-18)
+### v1.0.0 (2024-10-18)
 - ✅ 初始版本发布
 - ✅ 基础功能实现
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 详见 LICENSE 文件
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+## 📚 相关文档
+
+- [BUILD_GUIDE.md](BUILD_GUIDE.md) - 完整的打包构建指南
+- [使用说明.md](使用说明.md) - 用户使用手册
+- [项目完成报告.md](项目完成报告.md) - 项目开发总结
+
+---
+
+**开发者**: Sports Performance Assessment Team  
+**版本**: 1.3.0  
+**最后更新**: 2024-10-18
