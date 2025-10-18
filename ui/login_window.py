@@ -290,21 +290,21 @@ class LoginWindow:
         # 填充表单
         self.name_var.set(user.name)
         self.gender_var.set(user.gender)
-        self.status_var.set(f"✅ 已选择用户: {user.name}")
+        self.status_var.set(UI_TEXTS["selected_user"].format(user.name))
     
     def validate_input(self) -> bool:
         """验证输入数据"""
         # 验证姓名
         is_valid, error_msg = DataValidator.validate_name(self.name_var.get())
         if not is_valid:
-            messagebox.showerror("输入错误", error_msg)
+            messagebox.showerror(UI_TEXTS["input_error"], error_msg)
             self.name_entry.focus()
             return False
         
         # 验证性别
         is_valid, error_msg = DataValidator.validate_gender(self.gender_var.get())
         if not is_valid:
-            messagebox.showerror("输入错误", error_msg)
+            messagebox.showerror(UI_TEXTS["input_error"], error_msg)
             return False
         
         return True
@@ -323,15 +323,15 @@ class LoginWindow:
         if user:
             # 用户存在，检查信息是否匹配
             if user.gender != gender:
-                messagebox.showerror("登录失败", "性别信息不匹配")
+                messagebox.showerror(UI_TEXTS["login_failed"], UI_TEXTS["gender_mismatch"])
                 return
             
             self.current_user = user
-            self.status_var.set(f"欢迎回来，{name}！")
+            self.status_var.set(UI_TEXTS["welcome_back"].format(name))
             
         else:
             # 用户不存在，询问是否注册
-            if messagebox.askyesno("用户不存在", f"用户 '{name}' 不存在，是否注册新用户？"):
+            if messagebox.askyesno(UI_TEXTS["user_not_found"], UI_TEXTS["register_prompt"].format(name)):
                 self.handle_register()
                 return
         
@@ -351,7 +351,7 @@ class LoginWindow:
         
         # 检查用户是否已存在
         if self.data_manager.find_user_by_name(name):
-            messagebox.showerror("注册失败", f"用户 '{name}' 已存在")
+            messagebox.showerror(UI_TEXTS["register_failed"], UI_TEXTS["user_exists"].format(name))
             return
         
         # 创建新用户
@@ -359,7 +359,7 @@ class LoginWindow:
         
         if self.data_manager.add_user(user):
             self.current_user = user
-            self.status_var.set(f"注册成功，欢迎 {name}！")
+            self.status_var.set(UI_TEXTS["register_success"].format(name))
             self.load_existing_users()  # 刷新用户列表
             
             if self.on_login_success:
@@ -367,7 +367,7 @@ class LoginWindow:
                 # 关闭登录窗口
                 self.window.destroy()
         else:
-            messagebox.showerror("注册失败", "用户注册失败，请重试")
+            messagebox.showerror(UI_TEXTS["register_failed"], UI_TEXTS["register_error"])
     
     def set_login_callback(self, callback: Callable):
         """设置登录成功回调函数"""

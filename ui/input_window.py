@@ -107,8 +107,8 @@ class InputWindow:
         
         # 副标题
         subtitle_label = tk.Label(title_frame, text="Score Entry System",
-                                 font=("Arial", 9),
-                                 bg="#16a085", fg="#ecf0f1")
+                                 font=INPUT_WINDOW_CONFIG["subtitle_font"],
+                                 bg=INPUT_WINDOW_CONFIG["title_bg"], fg=INPUT_WINDOW_CONFIG["bg_color"])
         subtitle_label.pack(pady=(5, 0))
         
         # 必选项框架
@@ -120,53 +120,53 @@ class InputWindow:
         
         # 必选项标签
         self.required_label = tk.Label(required_frame, text="", 
-                                      font=("Microsoft YaHei", 11, "bold"),
-                                      bg="#ffffff", fg="#16a085")
+                                      font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                      bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.required_label.pack(anchor=tk.W, pady=(0, 8))
         
         # 时间输入框架（分钟和秒钟）
-        time_input_frame = tk.Frame(required_frame, bg="#ffffff")
+        time_input_frame = tk.Frame(required_frame, bg=INPUT_WINDOW_CONFIG["frame_bg"])
         time_input_frame.pack(anchor=tk.W, pady=(0, 10))
         
         # 分钟输入
         tk.Label(time_input_frame, text="分钟:", 
-                font=("Microsoft YaHei", 10),
-                bg="#ffffff", fg="#34495e").pack(side=tk.LEFT)
+                font=INPUT_WINDOW_CONFIG["label_font_small"],
+                bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_secondary_color"]).pack(side=tk.LEFT)
         
         self.required_minutes_var = tk.IntVar(value=0)
         self.required_minutes_spinbox = tk.Spinbox(time_input_frame, 
                                                    from_=0, to=10,
                                                    textvariable=self.required_minutes_var,
-                                                   width=5, font=("Arial", 11),
+                                                   width=5, font=INPUT_WINDOW_CONFIG["entry_font"],
                                                    justify=tk.CENTER,
                                                    relief=tk.SOLID, bd=1)
         self.required_minutes_spinbox.pack(side=tk.LEFT, padx=(5, 15))
         
         # 秒钟输入
         tk.Label(time_input_frame, text="秒钟:", 
-                font=("Microsoft YaHei", 10),
-                bg="#ffffff", fg="#34495e").pack(side=tk.LEFT)
+                font=INPUT_WINDOW_CONFIG["label_font_small"],
+                bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_secondary_color"]).pack(side=tk.LEFT)
         
         self.required_seconds_var = tk.IntVar(value=0)
         self.required_seconds_spinbox = tk.Spinbox(time_input_frame, 
                                                    from_=0, to=59,
                                                    textvariable=self.required_seconds_var,
-                                                   width=5, font=("Arial", 11),
+                                                   width=5, font=INPUT_WINDOW_CONFIG["entry_font"],
                                                    justify=tk.CENTER,
                                                    relief=tk.SOLID, bd=1)
         self.required_seconds_spinbox.pack(side=tk.LEFT, padx=5)
         
         # 提示文本
-        hint_label = tk.Label(required_frame, text="💡 使用上下箭头或直接输入数字",
-                            font=("Microsoft YaHei", 9),
-                            bg="#ffffff", fg="#95a5a6")
+        hint_label = tk.Label(required_frame, text=INPUT_HINTS["spinbox_hint"],
+                            font=INPUT_WINDOW_CONFIG["label_font_tiny"],
+                            bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_hint_color"])
         hint_label.pack(anchor=tk.W, pady=(0, 8))
         
         # 得分显示
         self.required_score_var = tk.StringVar(value="得分: --")
         self.required_score_label = tk.Label(required_frame, textvariable=self.required_score_var, 
-                                           font=("Microsoft YaHei", 11, "bold"),
-                                           bg="#ffffff", fg="#3498db")
+                                           font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                           bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["score_display_color"])
         self.required_score_label.pack(anchor=tk.W)
         
         # 第一类选考框架
@@ -178,30 +178,30 @@ class InputWindow:
         
         # 项目选择
         tk.Label(category1_frame, text="选择项目",
-                font=("Microsoft YaHei", 11, "bold"),
-                bg="#ffffff", fg="#16a085").pack(anchor=tk.W, pady=(0, 5))
+                font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"]).pack(anchor=tk.W, pady=(0, 5))
         self.category1_var = tk.StringVar()
         self.category1_combo = ttk.Combobox(category1_frame, textvariable=self.category1_var, 
-                                          state="readonly", width=25, font=("Microsoft YaHei", 10))
+                                          state="readonly", width=25, font=INPUT_WINDOW_CONFIG["label_font_small"])
         self.category1_combo.pack(anchor=tk.W, pady=(0, 12))
         
         # 成绩输入
         self.category1_label = tk.Label(category1_frame, text="",
-                                       font=("Microsoft YaHei", 11, "bold"),
-                                       bg="#ffffff", fg="#16a085")
+                                       font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                       bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category1_label.pack(anchor=tk.W, pady=(0, 5))
         
         self.category1_var_value = tk.StringVar()
         self.category1_entry = tk.Entry(category1_frame, textvariable=self.category1_var_value, 
-                                        width=15, font=("Arial", 12),
+                                        width=15, font=INPUT_WINDOW_CONFIG["entry_font"],
                                         relief=tk.SOLID, bd=1,
-                                        highlightthickness=1, highlightcolor="#16a085")
+                                        highlightthickness=1, highlightcolor=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category1_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
         self.category1_score_var = tk.StringVar(value="得分: --")
         self.category1_score_label = tk.Label(category1_frame, textvariable=self.category1_score_var, 
-                                            font=("Microsoft YaHei", 11, "bold"),
-                                            bg="#ffffff", fg="#3498db")
+                                            font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                            bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["score_display_color"])
         self.category1_score_label.pack(anchor=tk.W)
         
         # 第二类选考框架
@@ -213,47 +213,47 @@ class InputWindow:
         
         # 项目选择
         tk.Label(category2_frame, text="选择项目",
-                font=("Microsoft YaHei", 11, "bold"),
-                bg="#ffffff", fg="#16a085").pack(anchor=tk.W, pady=(0, 5))
+                font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"]).pack(anchor=tk.W, pady=(0, 5))
         self.category2_var = tk.StringVar()
         self.category2_combo = ttk.Combobox(category2_frame, textvariable=self.category2_var, 
-                                          state="readonly", width=25, font=("Microsoft YaHei", 10))
+                                          state="readonly", width=25, font=INPUT_WINDOW_CONFIG["label_font_small"])
         self.category2_combo.pack(anchor=tk.W, pady=(0, 12))
         
         # 成绩输入
         self.category2_label = tk.Label(category2_frame, text="",
-                                       font=("Microsoft YaHei", 11, "bold"),
-                                       bg="#ffffff", fg="#16a085")
+                                       font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                       bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category2_label.pack(anchor=tk.W, pady=(0, 5))
         
         self.category2_var_value = tk.StringVar()
         self.category2_entry = tk.Entry(category2_frame, textvariable=self.category2_var_value, 
-                                        width=15, font=("Arial", 12),
+                                        width=15, font=INPUT_WINDOW_CONFIG["entry_font"],
                                         relief=tk.SOLID, bd=1,
-                                        highlightthickness=1, highlightcolor="#16a085")
+                                        highlightthickness=1, highlightcolor=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category2_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
         self.category2_score_var = tk.StringVar(value="得分: --")
         self.category2_score_label = tk.Label(category2_frame, textvariable=self.category2_score_var, 
-                                            font=("Microsoft YaHei", 11, "bold"),
-                                            bg="#ffffff", fg="#3498db")
+                                            font=INPUT_WINDOW_CONFIG["label_font_bold"],
+                                            bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["score_display_color"])
         self.category2_score_label.pack(anchor=tk.W)
         
         # 总分显示框架
         total_frame = tk.LabelFrame(main_frame, text=" 📊 总分计算 ", 
-                                    font=("Microsoft YaHei", 12, "bold"),
-                                    bg="#ffffff", fg="#16a085",
+                                    font=INPUT_WINDOW_CONFIG["section_font"],
+                                    bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["label_primary_color"],
                                     padx=25, pady=20, relief=tk.FLAT, bd=2)
         total_frame.pack(fill=tk.X, pady=(0, 25))
         
         self.total_score_var = tk.StringVar(value="总分: --")
         self.total_score_label = tk.Label(total_frame, textvariable=self.total_score_var, 
-                                         font=("Microsoft YaHei", 18, "bold"),
-                                         bg="#ffffff", fg="#e74c3c")
+                                         font=INPUT_WINDOW_CONFIG["score_font"],
+                                         bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["score_total_color"])
         self.total_score_label.pack()
         
         # 按钮框架
-        button_frame = tk.Frame(main_frame, bg="#ecf0f1")
+        button_frame = tk.Frame(main_frame, bg=INPUT_WINDOW_CONFIG["bg_color"])
         button_frame.pack(fill=tk.X)
         
         # 保存按钮
