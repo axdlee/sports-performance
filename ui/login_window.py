@@ -29,68 +29,113 @@ class LoginWindow:
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
         self.window.title("用户登录 - 体育成绩评估系统")
-        self.window.geometry("500x400")
+        self.window.geometry("550x550")
         self.window.resizable(False, False)
+        
+        # 设置窗口背景色
+        self.window.configure(bg="#f0f4f8")
         
         # 设置窗口居中
         self.center_window()
         
         # 创建主框架
-        main_frame = ttk.Frame(self.window, padding="20")
+        main_frame = tk.Frame(self.window, bg="#f0f4f8", padx=30, pady=20)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
+        # 标题框架
+        title_frame = tk.Frame(main_frame, bg="#2c3e50", pady=20)
+        title_frame.pack(fill=tk.X, pady=(0, 25))
+        
         # 标题
-        title_label = ttk.Label(main_frame, text="体育成绩评估系统", 
-                              font=("Arial", 18, "bold"))
-        title_label.pack(pady=(0, 20))
+        title_label = tk.Label(title_frame, text="🏃 体育成绩评估系统", 
+                              font=("Microsoft YaHei", 20, "bold"),
+                              bg="#2c3e50", fg="white")
+        title_label.pack()
         
         # 用户信息输入框架
-        info_frame = ttk.LabelFrame(main_frame, text="用户信息", padding="15")
+        info_frame = tk.LabelFrame(main_frame, text=" 👤 用户信息 ", 
+                                   font=("Microsoft YaHei", 11, "bold"),
+                                   bg="#ffffff", fg="#2c3e50",
+                                   padx=20, pady=15, relief=tk.FLAT, bd=0)
         info_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 姓名输入
-        ttk.Label(info_frame, text="姓名:").grid(row=0, column=0, sticky=tk.W, pady=5)
+        name_label = tk.Label(info_frame, text="姓名:", 
+                             font=("Microsoft YaHei", 10),
+                             bg="#ffffff", fg="#34495e")
+        name_label.grid(row=0, column=0, sticky=tk.W, pady=8)
+        
         self.name_var = tk.StringVar()
-        self.name_entry = ttk.Entry(info_frame, textvariable=self.name_var, width=25)
-        self.name_entry.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+        self.name_entry = tk.Entry(info_frame, textvariable=self.name_var, 
+                                   width=28, font=("Microsoft YaHei", 10),
+                                   relief=tk.SOLID, bd=1)
+        self.name_entry.grid(row=0, column=1, sticky=tk.W, padx=(15, 0), pady=8)
         
         # 性别选择
-        ttk.Label(info_frame, text="性别:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        self.gender_var = tk.StringVar(value=GENDER_MALE)
-        gender_frame = ttk.Frame(info_frame)
-        gender_frame.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+        gender_label = tk.Label(info_frame, text="性别:", 
+                               font=("Microsoft YaHei", 10),
+                               bg="#ffffff", fg="#34495e")
+        gender_label.grid(row=1, column=0, sticky=tk.W, pady=8)
         
-        ttk.Radiobutton(gender_frame, text="男", variable=self.gender_var, 
-                       value=GENDER_MALE).pack(side=tk.LEFT)
-        ttk.Radiobutton(gender_frame, text="女", variable=self.gender_var, 
-                       value=GENDER_FEMALE).pack(side=tk.LEFT, padx=(20, 0))
+        self.gender_var = tk.StringVar(value=GENDER_MALE)
+        gender_frame = tk.Frame(info_frame, bg="#ffffff")
+        gender_frame.grid(row=1, column=1, sticky=tk.W, padx=(15, 0), pady=8)
+        
+        male_radio = tk.Radiobutton(gender_frame, text="男", variable=self.gender_var, 
+                                   value=GENDER_MALE, font=("Microsoft YaHei", 10),
+                                   bg="#ffffff", fg="#34495e", selectcolor="#3498db",
+                                   activebackground="#ffffff")
+        male_radio.pack(side=tk.LEFT)
+        
+        female_radio = tk.Radiobutton(gender_frame, text="女", variable=self.gender_var, 
+                                     value=GENDER_FEMALE, font=("Microsoft YaHei", 10),
+                                     bg="#ffffff", fg="#34495e", selectcolor="#e74c3c",
+                                     activebackground="#ffffff")
+        female_radio.pack(side=tk.LEFT, padx=(25, 0))
         
         # 按钮框架
-        button_frame = ttk.Frame(main_frame)
+        button_frame = tk.Frame(main_frame, bg="#f0f4f8")
         button_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 登录按钮
-        self.login_button = ttk.Button(button_frame, text="登录", 
-                                      command=self.handle_login, width=15)
-        self.login_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.login_button = tk.Button(button_frame, text="🔑 登录", 
+                                     command=self.handle_login,
+                                     font=("Microsoft YaHei", 11, "bold"),
+                                     bg="#3498db", fg="white",
+                                     width=12, height=1,
+                                     relief=tk.FLAT, bd=0,
+                                     cursor="hand2",
+                                     activebackground="#2980b9",
+                                     activeforeground="white")
+        self.login_button.pack(side=tk.LEFT, padx=(0, 15))
         
         # 注册按钮
-        self.register_button = ttk.Button(button_frame, text="注册新用户", 
-                                        command=self.handle_register, width=15)
+        self.register_button = tk.Button(button_frame, text="📝 注册新用户", 
+                                        command=self.handle_register,
+                                        font=("Microsoft YaHei", 11, "bold"),
+                                        bg="#2ecc71", fg="white",
+                                        width=12, height=1,
+                                        relief=tk.FLAT, bd=0,
+                                        cursor="hand2",
+                                        activebackground="#27ae60",
+                                        activeforeground="white")
         self.register_button.pack(side=tk.LEFT)
         
         # 已有用户列表
-        users_frame = ttk.LabelFrame(main_frame, text="已有用户", padding="10")
+        users_frame = tk.LabelFrame(main_frame, text=" 📋 已有用户 (双击选择) ", 
+                                    font=("Microsoft YaHei", 11, "bold"),
+                                    bg="#ffffff", fg="#2c3e50",
+                                    padx=15, pady=10, relief=tk.FLAT, bd=0)
         users_frame.pack(fill=tk.BOTH, expand=True)
         
         # 用户列表
         columns = ("姓名", "性别", "记录数")
-        self.users_tree = ttk.Treeview(users_frame, columns=columns, show="headings", height=8)
+        self.users_tree = ttk.Treeview(users_frame, columns=columns, show="headings", height=6)
         
         # 设置列标题
         for col in columns:
             self.users_tree.heading(col, text=col)
-            self.users_tree.column(col, width=100)
+            self.users_tree.column(col, width=120, anchor=tk.CENTER)
         
         # 滚动条
         scrollbar = ttk.Scrollbar(users_frame, orient=tk.VERTICAL, command=self.users_tree.yview)
@@ -103,10 +148,11 @@ class LoginWindow:
         self.users_tree.bind("<Double-1>", self.on_user_double_click)
         
         # 状态栏
-        self.status_var = tk.StringVar(value="请输入用户信息或选择已有用户")
-        status_label = ttk.Label(main_frame, textvariable=self.status_var, 
-                               foreground="gray")
-        status_label.pack(pady=(10, 0))
+        self.status_var = tk.StringVar(value="💡 请输入用户信息或双击选择已有用户")
+        status_label = tk.Label(main_frame, textvariable=self.status_var,
+                               font=("Microsoft YaHei", 9),
+                               bg="#f0f4f8", fg="#7f8c8d")
+        status_label.pack(pady=(15, 0))
     
     def center_window(self):
         """窗口居中显示"""
@@ -179,6 +225,8 @@ class LoginWindow:
         # 登录成功
         if self.current_user and self.on_login_success:
             self.on_login_success(self.current_user)
+            # 关闭登录窗口
+            self.window.destroy()
     
     def handle_register(self):
         """处理注册"""
@@ -203,6 +251,8 @@ class LoginWindow:
             
             if self.on_login_success:
                 self.on_login_success(self.current_user)
+                # 关闭登录窗口
+                self.window.destroy()
         else:
             messagebox.showerror("注册失败", "用户注册失败，请重试")
     

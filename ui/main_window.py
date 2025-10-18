@@ -27,58 +27,108 @@ class MainWindow:
         # 创建主窗口
         self.window = tk.Tk()
         self.window.title("体育成绩评估系统")
-        self.window.geometry("400x300")
+        self.window.geometry("500x550")
         self.window.resizable(False, False)
+        
+        # 设置窗口背景色
+        self.window.configure(bg="#ecf0f1")
         
         # 设置窗口居中
         self.center_window()
         
         # 创建主框架
-        main_frame = ttk.Frame(self.window, padding="30")
+        main_frame = tk.Frame(self.window, bg="#ecf0f1", padx=30, pady=25)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
+        # 标题框架
+        title_frame = tk.Frame(main_frame, bg="#16a085", pady=25)
+        title_frame.pack(fill=tk.X, pady=(0, 30))
+        
         # 标题
-        title_label = ttk.Label(main_frame, text="体育成绩评估系统", 
-                               font=("Arial", 20, "bold"))
-        title_label.pack(pady=(0, 30))
+        title_label = tk.Label(title_frame, text="🏃 体育成绩评估系统", 
+                               font=("Microsoft YaHei", 22, "bold"),
+                               bg="#16a085", fg="white")
+        title_label.pack()
+        
+        subtitle_label = tk.Label(title_frame, text="Physical Education Performance Assessment System",
+                                 font=("Arial", 9),
+                                 bg="#16a085", fg="#ecf0f1")
+        subtitle_label.pack(pady=(5, 0))
         
         # 用户信息显示
-        self.user_info_frame = ttk.LabelFrame(main_frame, text="当前用户", padding="15")
-        self.user_info_frame.pack(fill=tk.X, pady=(0, 20))
+        self.user_info_frame = tk.LabelFrame(main_frame, text=" 👤 当前用户 ", 
+                                            font=("Microsoft YaHei", 11, "bold"),
+                                            bg="#ffffff", fg="#2c3e50",
+                                            padx=20, pady=15, relief=tk.FLAT, bd=0)
+        self.user_info_frame.pack(fill=tk.X, pady=(0, 25))
         
         self.user_info_var = tk.StringVar(value="未登录")
-        self.user_info_label = ttk.Label(self.user_info_frame, textvariable=self.user_info_var, 
-                                        font=("Arial", 12))
+        self.user_info_label = tk.Label(self.user_info_frame, textvariable=self.user_info_var, 
+                                        font=("Microsoft YaHei", 12),
+                                        bg="#ffffff", fg="#34495e")
         self.user_info_label.pack()
         
         # 功能按钮框架
-        button_frame = ttk.Frame(main_frame)
+        button_frame = tk.Frame(main_frame, bg="#ecf0f1")
         button_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 登录按钮
-        self.login_button = ttk.Button(button_frame, text="用户登录", 
-                                     command=self.show_login_window, width=20)
-        self.login_button.pack(pady=5)
+        self.login_button = tk.Button(button_frame, text="🔑 用户登录", 
+                                     command=self.show_login_window,
+                                     font=("Microsoft YaHei", 12, "bold"),
+                                     bg="#3498db", fg="white",
+                                     width=18, height=2,
+                                     relief=tk.FLAT, bd=0,
+                                     cursor="hand2",
+                                     activebackground="#2980b9",
+                                     activeforeground="white")
+        self.login_button.pack(pady=8)
         
         # 成绩录入按钮
-        self.input_button = ttk.Button(button_frame, text="成绩录入", 
-                                     command=self.show_input_window, width=20, state=tk.DISABLED)
-        self.input_button.pack(pady=5)
+        self.input_button = tk.Button(button_frame, text="📝 成绩录入", 
+                                     command=self.show_input_window,
+                                     font=("Microsoft YaHei", 12, "bold"),
+                                     bg="#2ecc71", fg="white",
+                                     width=18, height=2,
+                                     relief=tk.FLAT, bd=0,
+                                     cursor="hand2",
+                                     state=tk.DISABLED,
+                                     disabledforeground="#95a5a6",
+                                     activebackground="#27ae60",
+                                     activeforeground="white")
+        self.input_button.pack(pady=8)
         
         # 成绩报告按钮
-        self.report_button = ttk.Button(button_frame, text="成绩报告", 
-                                      command=self.show_report_window, width=20, state=tk.DISABLED)
-        self.report_button.pack(pady=5)
+        self.report_button = tk.Button(button_frame, text="📊 成绩报告", 
+                                      command=self.show_report_window,
+                                      font=("Microsoft YaHei", 12, "bold"),
+                                      bg="#e67e22", fg="white",
+                                      width=18, height=2,
+                                      relief=tk.FLAT, bd=0,
+                                      cursor="hand2",
+                                      state=tk.DISABLED,
+                                      disabledforeground="#95a5a6",
+                                      activebackground="#d35400",
+                                      activeforeground="white")
+        self.report_button.pack(pady=8)
         
         # 退出按钮
-        self.exit_button = ttk.Button(button_frame, text="退出程序", 
-                                     command=self.exit_application, width=20)
-        self.exit_button.pack(pady=5)
+        self.exit_button = tk.Button(button_frame, text="❌ 退出程序", 
+                                     command=self.exit_application,
+                                     font=("Microsoft YaHei", 12, "bold"),
+                                     bg="#95a5a6", fg="white",
+                                     width=18, height=2,
+                                     relief=tk.FLAT, bd=0,
+                                     cursor="hand2",
+                                     activebackground="#7f8c8d",
+                                     activeforeground="white")
+        self.exit_button.pack(pady=8)
         
         # 状态栏
-        self.status_var = tk.StringVar(value="欢迎使用体育成绩评估系统")
-        status_label = ttk.Label(main_frame, textvariable=self.status_var, 
-                               foreground="gray", font=("Arial", 10))
+        self.status_var = tk.StringVar(value="💡 欢迎使用体育成绩评估系统")
+        status_label = tk.Label(main_frame, textvariable=self.status_var,
+                               font=("Microsoft YaHei", 10),
+                               bg="#ecf0f1", fg="#7f8c8d")
         status_label.pack(pady=(20, 0))
     
     def center_window(self):
@@ -100,7 +150,7 @@ class MainWindow:
         """登录成功回调"""
         self.current_user = user
         self.update_ui_after_login()
-        self.status_var.set(f"欢迎，{user.name}！")
+        self.status_var.set(f"✅ 欢迎，{user.name}！")
     
     def update_ui_after_login(self):
         """登录后更新界面"""
@@ -108,15 +158,15 @@ class MainWindow:
             gender_text = "男" if self.current_user.gender == "male" else "女"
             record_count = len(self.current_user.records)
             
-            user_info = f"{self.current_user.name} ({gender_text}) - 记录: {record_count}条"
+            user_info = f"✅ {self.current_user.name} ({gender_text}) - 记录: {record_count}条"
             self.user_info_var.set(user_info)
             
-            # 启用功能按钮
-            self.input_button.config(state=tk.NORMAL)
-            self.report_button.config(state=tk.NORMAL)
+            # 启用功能按钮并更新样式
+            self.input_button.config(state=tk.NORMAL, bg="#2ecc71")
+            self.report_button.config(state=tk.NORMAL, bg="#e67e22")
             
-            # 禁用登录按钮
-            self.login_button.config(state=tk.DISABLED)
+            # 禁用登录按钮并更新样式
+            self.login_button.config(state=tk.DISABLED, bg="#bdc3c7")
     
     def show_input_window(self):
         """显示成绩录入窗口"""
@@ -135,7 +185,7 @@ class MainWindow:
         
         # 更新状态
         total_score = record_data["total_score"]
-        self.status_var.set(f"成绩已保存！总分: {total_score:.1f}")
+        self.status_var.set(f"✅ 成绩已保存！总分: {total_score:.1f}")
         
         # 询问是否查看报告
         if messagebox.askyesno("保存成功", f"成绩已保存！总分: {total_score:.1f}\n\n是否查看成绩报告？"):

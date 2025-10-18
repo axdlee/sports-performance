@@ -31,23 +31,34 @@ class InputWindow:
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
         self.window.title(f"成绩录入 - {self.user.name}")
-        self.window.geometry("600x700")
+        self.window.geometry("650x750")
         self.window.resizable(False, False)
+        
+        # 设置窗口背景色
+        self.window.configure(bg="#f5f7fa")
         
         # 设置窗口居中
         self.center_window()
         
         # 创建主框架
-        main_frame = ttk.Frame(self.window, padding="20")
+        main_frame = tk.Frame(self.window, bg="#f5f7fa", padx=25, pady=20)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
+        # 标题框架
+        title_frame = tk.Frame(main_frame, bg="#27ae60", pady=20)
+        title_frame.pack(fill=tk.X, pady=(0, 25))
+        
         # 标题
-        title_label = ttk.Label(main_frame, text=f"成绩录入 - {self.user.name}", 
-                               font=("Arial", 16, "bold"))
-        title_label.pack(pady=(0, 20))
+        title_label = tk.Label(title_frame, text=f"📝 成绩录入 - {self.user.name}", 
+                               font=("Microsoft YaHei", 18, "bold"),
+                               bg="#27ae60", fg="white")
+        title_label.pack()
         
         # 必选项框架
-        required_frame = ttk.LabelFrame(main_frame, text="必选项 (10分)", padding="15")
+        required_frame = tk.LabelFrame(main_frame, text=" 🏃 必选项 (10分) ", 
+                                       font=("Microsoft YaHei", 11, "bold"),
+                                       bg="#ffffff", fg="#c0392b",
+                                       padx=18, pady=12, relief=tk.FLAT, bd=0)
         required_frame.pack(fill=tk.X, pady=(0, 15))
         
         # 必选项标签和输入框
@@ -65,7 +76,10 @@ class InputWindow:
         self.required_score_label.pack(anchor=tk.W)
         
         # 第一类选考框架
-        category1_frame = ttk.LabelFrame(main_frame, text="第一类选考 (10分)", padding="15")
+        category1_frame = tk.LabelFrame(main_frame, text=" 💪 第一类选考 (10分) ", 
+                                        font=("Microsoft YaHei", 11, "bold"),
+                                        bg="#ffffff", fg="#2980b9",
+                                        padx=18, pady=12, relief=tk.FLAT, bd=0)
         category1_frame.pack(fill=tk.X, pady=(0, 15))
         
         # 项目选择
@@ -90,7 +104,10 @@ class InputWindow:
         self.category1_score_label.pack(anchor=tk.W)
         
         # 第二类选考框架
-        category2_frame = ttk.LabelFrame(main_frame, text="第二类选考 (10分)", padding="15")
+        category2_frame = tk.LabelFrame(main_frame, text=" ⚽ 第二类选考 (10分) ", 
+                                        font=("Microsoft YaHei", 11, "bold"),
+                                        bg="#ffffff", fg="#e67e22",
+                                        padx=18, pady=12, relief=tk.FLAT, bd=0)
         category2_frame.pack(fill=tk.X, pady=(0, 15))
         
         # 项目选择
@@ -115,26 +132,44 @@ class InputWindow:
         self.category2_score_label.pack(anchor=tk.W)
         
         # 总分显示框架
-        total_frame = ttk.LabelFrame(main_frame, text="总分计算", padding="15")
+        total_frame = tk.LabelFrame(main_frame, text=" 📊 总分计算 ", 
+                                    font=("Microsoft YaHei", 11, "bold"),
+                                    bg="#ffffff", fg="#16a085",
+                                    padx=18, pady=15, relief=tk.FLAT, bd=0)
         total_frame.pack(fill=tk.X, pady=(0, 20))
         
         self.total_score_var = tk.StringVar(value="总分: --")
-        self.total_score_label = ttk.Label(total_frame, textvariable=self.total_score_var, 
-                                         font=("Arial", 14, "bold"), foreground="red")
+        self.total_score_label = tk.Label(total_frame, textvariable=self.total_score_var, 
+                                         font=("Microsoft YaHei", 16, "bold"),
+                                         bg="#ffffff", fg="#e74c3c")
         self.total_score_label.pack()
         
         # 按钮框架
-        button_frame = ttk.Frame(main_frame)
+        button_frame = tk.Frame(main_frame, bg="#f5f7fa")
         button_frame.pack(fill=tk.X)
         
         # 保存按钮
-        self.save_button = ttk.Button(button_frame, text="保存成绩", 
-                                    command=self.handle_save, width=15)
-        self.save_button.pack(side=tk.LEFT, padx=(0, 10))
+        self.save_button = tk.Button(button_frame, text="💾 保存成绩", 
+                                    command=self.handle_save,
+                                    font=("Microsoft YaHei", 12, "bold"),
+                                    bg="#27ae60", fg="white",
+                                    width=14, height=2,
+                                    relief=tk.FLAT, bd=0,
+                                    cursor="hand2",
+                                    activebackground="#229954",
+                                    activeforeground="white")
+        self.save_button.pack(side=tk.LEFT, padx=(0, 15))
         
         # 重置按钮
-        self.reset_button = ttk.Button(button_frame, text="重置", 
-                                      command=self.handle_reset, width=15)
+        self.reset_button = tk.Button(button_frame, text="🔄 重置", 
+                                      command=self.handle_reset,
+                                      font=("Microsoft YaHei", 12, "bold"),
+                                      bg="#95a5a6", fg="white",
+                                      width=14, height=2,
+                                      relief=tk.FLAT, bd=0,
+                                      cursor="hand2",
+                                      activebackground="#7f8c8d",
+                                      activeforeground="white")
         self.reset_button.pack(side=tk.LEFT)
         
         # 绑定事件
