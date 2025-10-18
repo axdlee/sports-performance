@@ -50,7 +50,7 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=['_bootlocale'],
+    excludes=[],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
@@ -74,7 +74,7 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    upx=False,  # 禁用 UPX 压缩，避免 DLL 加载问题
     console=False,  # 无控制台窗口
     disable_windowed_traceback=False,
     target_arch=None,
@@ -90,7 +90,7 @@ coll = COLLECT(
     a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,  # 禁用 UPX 压缩，避免 DLL 加载问题
     upx_exclude=[],
     name='体育成绩评估系统',
 )
