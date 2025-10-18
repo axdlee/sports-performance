@@ -188,6 +188,22 @@ mv MyIcon.icns assets/icon.icns
 convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ```
 
+## 数据存储
+
+打包后的应用将用户数据存储在系统标准位置，而不是应用程序包内部：
+
+- **macOS**: `~/Library/Application Support/SportsPerformance/`
+- **Windows**: `%APPDATA%\SportsPerformance\`
+- **Linux**: `~/.local/share/SportsPerformance/`
+
+这确保了：
+- ✅ 应用包保持只读状态
+- ✅ 数据在应用更新后保留
+- ✅ 符合各平台的标准实践
+- ✅ 多用户环境下数据隔离
+
+详细说明请参考 [DATA_STORAGE.md](DATA_STORAGE.md)
+
 ## 常见问题
 
 ### Q: PyInstaller 构建失败

@@ -107,8 +107,17 @@ sports-performance/
 ├── services/                  # 业务逻辑
 ├── ui/                        # 用户界面
 ├── utils/                     # 工具类
-└── data/                      # 数据存储
+│   └── path_helper.py        # 路径处理（支持打包）
+└── data/                      # 开发环境数据（打包后使用系统目录）
 ```
+
+## 💾 数据存储
+
+打包后的应用将数据存储在系统标准位置：
+- **macOS**: `~/Library/Application Support/SportsPerformance/`
+- **Windows**: `%APPDATA%\SportsPerformance\`
+
+详细说明请参考 [DATA_STORAGE.md](DATA_STORAGE.md)
 
 ## 🔧 技术栈
 
@@ -166,6 +175,15 @@ python build.py
 - 系统权限设置
 
 ## 📝 更新日志
+
+### v1.3.1 (2025-10-18)
+- 🐛 修复打包后数据目录只读问题
+  - 数据现在存储在系统用户目录
+  - macOS: `~/Library/Application Support/SportsPerformance/`
+  - Windows: `%APPDATA%\SportsPerformance\`
+- ✅ 新增 `utils/path_helper.py` 路径处理模块
+- ✅ 新增 `DATA_STORAGE.md` 数据存储说明文档
+- ✅ 改进跨平台数据持久化
 
 ### v1.3.0 (2024-10-18)
 - ✅ 完善跨平台打包机制

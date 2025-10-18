@@ -3,6 +3,10 @@
 常量配置文件
 """
 
+# 导入路径辅助工具
+import sys
+import os
+
 # 性别常量
 GENDER_MALE = "male"
 GENDER_FEMALE = "female"
@@ -41,7 +45,18 @@ GRADE_STANDARDS = {
 }
 
 # 文件路径
-DATA_FILE = "data/users.json"
+# 动态获取数据文件路径，以支持打包后的应用
+def _get_data_file_path():
+    """获取数据文件路径（支持打包环境）"""
+    # 延迟导入以避免循环依赖
+    try:
+        from utils.path_helper import get_data_file_path
+        return get_data_file_path("users.json")
+    except ImportError:
+        # 开发环境回退方案
+        return "data/users.json"
+
+DATA_FILE = _get_data_file_path()
 
 # UI配置
 WINDOW_TITLE = "体育成绩评估系统"

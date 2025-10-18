@@ -81,8 +81,15 @@ class ChartGenerator:
         
         # 保存图表
         if save_path is None:
+            # 使用用户数据目录
+            try:
+                from utils.path_helper import get_user_data_dir
+                base_dir = get_user_data_dir()
+            except ImportError:
+                base_dir = "data"
+            
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            save_path = f"data/{user_name}_成绩趋势图_{timestamp}.png"
+            save_path = os.path.join(base_dir, f"{user_name}_成绩趋势图_{timestamp}.png")
         
         # 确保目录存在
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -162,8 +169,15 @@ class ChartGenerator:
         
         # 保存图表
         if save_path is None:
+            # 使用用户数据目录
+            try:
+                from utils.path_helper import get_user_data_dir
+                base_dir = get_user_data_dir()
+            except ImportError:
+                base_dir = "data"
+            
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            save_path = f"data/{user_name}_成绩分布图_{timestamp}.png"
+            save_path = os.path.join(base_dir, f"{user_name}_成绩分布图_{timestamp}.png")
         
         # 确保目录存在
         os.makedirs(os.path.dirname(save_path), exist_ok=True)

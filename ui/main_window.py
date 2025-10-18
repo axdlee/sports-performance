@@ -23,8 +23,17 @@ from config.constants import (
 class MainWindow:
     """主窗口类"""
     
-    # 上次登录用户配置文件路径
-    LAST_USER_FILE = "data/last_user.json"
+    # 上次登录用户配置文件路径（动态获取以支持打包）
+    @staticmethod
+    def _get_last_user_file():
+        """获取上次登录用户配置文件路径"""
+        try:
+            from utils.path_helper import get_data_file_path
+            return get_data_file_path("last_user.json")
+        except ImportError:
+            return "data/last_user.json"
+    
+    LAST_USER_FILE = _get_last_user_file.__func__()
     
     def __init__(self):
         self.data_manager = DataManager()

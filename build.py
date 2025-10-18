@@ -139,11 +139,33 @@ def create_macos_installer():
 3. 系统会自动计算得分并生成分析报告
 4. 支持查看历史数据和趋势分析
 
-## 注意事项
+## 数据存储
 
-- 应用数据保存在应用程序包内的 data 文件夹
-- 建议定期备份数据文件
-- 卸载前请备份数据
+应用数据存储在系统标准位置：
+  ~/Library/Application Support/SportsPerformance/
+
+这确保：
+- 数据在应用更新后保留
+- 应用程序包保持只读状态
+- 符合 macOS 标准实践
+
+查看数据目录：
+1. 打开 Finder，按 Command + Shift + G
+2. 输入：~/Library/Application Support/SportsPerformance
+3. 点击"前往"
+
+## 数据备份
+
+建议定期备份数据文件：
+1. 找到数据目录（见上方说明）
+2. 复制整个 SportsPerformance 文件夹
+3. 保存到安全位置
+
+## 卸载说明
+
+1. 删除应用：将 .app 拖到废纸篓
+2. 删除数据（可选）：
+   在终端执行：rm -rf ~/Library/Application\ Support/SportsPerformance
 
 ## 技术支持
 
@@ -152,7 +174,7 @@ def create_macos_installer():
 2. 应用程序权限设置
 3. 数据文件完整性
 
-版本: 1.0.0
+版本: 1.3.1
 """
         
         readme_file = installer_dir / "README.txt"
