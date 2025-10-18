@@ -54,17 +54,11 @@ class LoginWindow:
         self.name_entry = ttk.Entry(info_frame, textvariable=self.name_var, width=25)
         self.name_entry.grid(row=0, column=1, sticky=tk.W, padx=(10, 0), pady=5)
         
-        # 学号输入
-        ttk.Label(info_frame, text="学号:").grid(row=1, column=0, sticky=tk.W, pady=5)
-        self.student_id_var = tk.StringVar()
-        self.student_id_entry = ttk.Entry(info_frame, textvariable=self.student_id_var, width=25)
-        self.student_id_entry.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=5)
-        
         # 性别选择
-        ttk.Label(info_frame, text="性别:").grid(row=2, column=0, sticky=tk.W, pady=5)
+        ttk.Label(info_frame, text="性别:").grid(row=1, column=0, sticky=tk.W, pady=5)
         self.gender_var = tk.StringVar(value=GENDER_MALE)
         gender_frame = ttk.Frame(info_frame)
-        gender_frame.grid(row=2, column=1, sticky=tk.W, padx=(10, 0), pady=5)
+        gender_frame.grid(row=1, column=1, sticky=tk.W, padx=(10, 0), pady=5)
         
         ttk.Radiobutton(gender_frame, text="男", variable=self.gender_var, 
                        value=GENDER_MALE).pack(side=tk.LEFT)
@@ -90,7 +84,7 @@ class LoginWindow:
         users_frame.pack(fill=tk.BOTH, expand=True)
         
         # 用户列表
-        columns = ("姓名", "性别", "学号", "记录数")
+        columns = ("姓名", "性别", "记录数")
         self.users_tree = ttk.Treeview(users_frame, columns=columns, show="headings", height=8)
         
         # 设置列标题
@@ -133,11 +127,10 @@ class LoginWindow:
         users = self.data_manager.get_all_users()
         for user in users:
             gender_text = "男" if user.gender == GENDER_MALE else "女"
-            student_id = user.student_id or "未设置"
             record_count = len(user.records)
             
             self.users_tree.insert("", tk.END, values=(
-                user.name, gender_text, student_id, record_count
+                user.name, gender_text, record_count
             ))
     
     def validate_input(self) -> bool:
@@ -147,13 +140,6 @@ class LoginWindow:
         if not is_valid:
             messagebox.showerror("输入错误", error_msg)
             self.name_entry.focus()
-            return False
-        
-        # 验证学号
-        is_valid, error_msg = DataValidator.validate_student_id(self.student_id_var.get())
-        if not is_valid:
-            messagebox.showerror("输入错误", error_msg)
-            self.student_id_entry.focus()
             return False
         
         # 验证性别
@@ -170,7 +156,6 @@ class LoginWindow:
             return
         
         name = self.name_var.get().strip()
-        student_id = self.student_id_var.get().strip() or None
         gender = self.gender_var.get()
         
         # 查找用户
@@ -181,13 +166,6 @@ class LoginWindow:
             if user.gender != gender:
                 messagebox.showerror("登录失败", "性别信息不匹配")
                 return
-            
-            if user.student_id != student_id:
-                # 学号不匹配，询问是否更新
-                if messagebox.askyesno("学号不匹配", 
-                                     f"学号不匹配，是否更新为: {student_id or '未设置'}？"):
-                    user.student_id = student_id
-                    self.data_manager.update_user(user)
             
             self.current_user = user
             self.status_var.set(f"欢迎回来，{name}！")
@@ -208,7 +186,6 @@ class LoginWindow:
             return
         
         name = self.name_var.get().strip()
-        student_id = self.student_id_var.get().strip() or None
         gender = self.gender_var.get()
         
         # 检查用户是否已存在
@@ -217,7 +194,7 @@ class LoginWindow:
             return
         
         # 创建新用户
-        user = User(name, gender, student_id)
+        user = User(name, gender)
         
         if self.data_manager.add_user(user):
             self.current_user = user
@@ -244,7 +221,6 @@ class LoginWindow:
             self.current_user = user
             # 填充表单
             self.name_var.set(user.name)
-            self.student_id_var.set(user.student_id or "")
             self.gender_var.set(user.gender)
             self.status_var.set(f"已选择用户: {name}")
     

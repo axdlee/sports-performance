@@ -106,10 +106,9 @@ class MainWindow:
         """登录后更新界面"""
         if self.current_user:
             gender_text = "男" if self.current_user.gender == "male" else "女"
-            student_id = self.current_user.student_id or "未设置"
             record_count = len(self.current_user.records)
             
-            user_info = f"{self.current_user.name} ({gender_text}) - 学号: {student_id} - 记录: {record_count}条"
+            user_info = f"{self.current_user.name} ({gender_text}) - 记录: {record_count}条"
             self.user_info_var.set(user_info)
             
             # 启用功能按钮
