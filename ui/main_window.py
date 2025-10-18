@@ -264,7 +264,7 @@ class MainWindow:
             # 退出时保存当前用户（如果已登录）
             if self.current_user:
                 self.save_last_user(self.current_user.id)
-            self.window.quit()
+            self.window.destroy()
     
     def run(self):
         """运行主窗口"""
