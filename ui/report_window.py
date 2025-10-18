@@ -13,6 +13,12 @@ from config.constants import PROJECT_NAMES
 from ui.custom_button import CustomButton
 from datetime import datetime
 import statistics
+import matplotlib
+matplotlib.use('TkAgg')
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.figure import Figure
+import matplotlib.font_manager as fm
 
 
 class ReportWindow:
@@ -134,7 +140,9 @@ class ReportWindow:
         # 创建Canvas和Scrollbar
         canvas = tk.Canvas(current_frame, bg=self.THEME_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(current_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=15, pady=15)
+        
+        # 创建可滚动框架 - 使用居中布局但不限制高度
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=180, pady=15)
         
         scrollable_frame.bind(
             "<Configure>",
@@ -235,7 +243,9 @@ class ReportWindow:
         # 创建Canvas和Scrollbar
         canvas = tk.Canvas(analysis_frame, bg=self.THEME_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(analysis_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=15, pady=15)
+        
+        # 创建可滚动框架 - 使用居中布局但不限制高度
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=180, pady=15)
         
         scrollable_frame.bind(
             "<Configure>",
@@ -309,28 +319,44 @@ class ReportWindow:
         trend_frame = tk.Frame(notebook, bg=self.THEME_BG, padx=15, pady=15)
         notebook.add(trend_frame, text="📉 历史趋势")
         
-        # 控制按钮卡片
-        control_card, control_content = self.create_card_frame(trend_frame, "🎨 图表工具")
-        control_card.pack(fill=tk.X, pady=(0, 15))
+        # 趋势图表卡片
+        chart_card, chart_content = self.create_card_frame(trend_frame, "📈 成绩趋势图")
+        chart_card.pack(fill=tk.BOTH, expand=True, pady=(0, 15))
         
-        button_frame = tk.Frame(control_content, bg=self.THEME_CARD)
-        button_frame.pack(fill=tk.X)
+        # 图表容器
+        self.chart_frame = tk.Frame(chart_content, bg=self.THEME_CARD, height=400)
+        self.chart_frame.pack(fill=tk.BOTH, expand=True)
+        self.chart_frame.pack_propagate(False)
         
-        # 生成趋势图按钮
-        generate_btn = CustomButton(button_frame, text="📈 生成趋势图", 
-                                    command=self.generate_trend_chart,
-                                    font=("Microsoft YaHei", 11, "bold"),
-                                    bg=self.THEME_PRIMARY, fg="white",
-                                    width=12, height=1,
-                                    activebackground="#138d75")
-        generate_btn.pack(side=tk.LEFT, padx=(0, 10))
+        # 提示标签（图表未生成时显示）
+        self.chart_placeholder = tk.Label(
+            self.chart_frame, 
+            text="加载中...",
+            font=("Microsoft YaHei", 12),
+            bg=self.THEME_CARD,
+            fg=self.THEME_TEXT_LIGHT
+        )
+        self.chart_placeholder.place(relx=0.5, rely=0.5, anchor="center")
+        
+        # 控制按钮框架
+        button_frame = tk.Frame(chart_content, bg=self.THEME_CARD)
+        button_frame.pack(fill=tk.X, pady=(10, 0))
+        
+        # 刷新图表按钮
+        refresh_btn = CustomButton(button_frame, text="🔄 刷新图表", 
+                                   command=self.refresh_chart,
+                                   font=("Microsoft YaHei", 10, "bold"),
+                                   bg=self.THEME_PRIMARY, fg="white",
+                                   width=10, height=1,
+                                   activebackground="#138d75")
+        refresh_btn.pack(side=tk.LEFT, padx=(0, 10))
         
         # 导出图表按钮
         export_btn = CustomButton(button_frame, text="💾 导出图表", 
                                  command=self.export_chart,
-                                 font=("Microsoft YaHei", 11, "bold"),
+                                 font=("Microsoft YaHei", 10, "bold"),
                                  bg=self.THEME_INFO, fg="white",
-                                 width=12, height=1,
+                                 width=10, height=1,
                                  activebackground="#2874a6")
         export_btn.pack(side=tk.LEFT)
         
@@ -374,7 +400,9 @@ class ReportWindow:
         # 创建Canvas和Scrollbar
         canvas = tk.Canvas(suggestions_frame, bg=self.THEME_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(suggestions_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=15, pady=15)
+        
+        # 创建可滚动框架 - 使用居中布局但不限制高度
+        scrollable_frame = tk.Frame(canvas, bg=self.THEME_BG, padx=130, pady=15)
         
         scrollable_frame.bind(
             "<Configure>",
@@ -448,6 +476,9 @@ class ReportWindow:
         
         # 显示历史记录
         self.display_history_records(records)
+        
+        # 渲染趋势图表
+        self.render_chart_in_window()
         
         # 生成训练建议
         self.generate_training_suggestions(latest_record)
@@ -1003,19 +1034,102 @@ class ReportWindow:
         else:
             return PROJECT_NAMES.get(item_key, item_key)
     
-    def generate_trend_chart(self):
-        """生成趋势图"""
+    def render_chart_in_window(self):
+        """在窗口中渲染趋势图"""
         records = self.user.get_all_records()
         
+        # 清空chart_frame
+        for widget in self.chart_frame.winfo_children():
+            widget.destroy()
+        
         if len(records) < 2:
-            messagebox.showwarning("数据不足", "需要至少2条记录才能生成趋势图")
+            # 显示提示信息
+            label = tk.Label(
+                self.chart_frame,
+                text="📊 需要至少2条记录才能生成趋势图\n\n请先录入更多成绩数据",
+                font=("Microsoft YaHei", 12),
+                bg=self.THEME_CARD,
+                fg=self.THEME_TEXT_LIGHT
+            )
+            label.place(relx=0.5, rely=0.5, anchor="center")
             return
         
         try:
-            chart_path = self.chart_generator.generate_score_trend_chart(records, self.user.name)
-            messagebox.showinfo("生成成功", f"趋势图已生成并保存:\n{chart_path}")
+            # 设置中文字体
+            plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei', 'Microsoft YaHei']
+            plt.rcParams['axes.unicode_minus'] = False
+            
+            # 创建图表
+            fig = Figure(figsize=(9, 4), dpi=100, facecolor='white')
+            ax = fig.add_subplot(111)
+            
+            # 准备数据
+            dates = [r['date'] for r in records]
+            total_scores = [r['scores']['total'] for r in records]
+            required_scores = [r['scores']['required'] for r in records]
+            category1_scores = [r['scores']['category1'] for r in records]
+            category2_scores = [r['scores']['category2'] for r in records]
+            
+            # 绘制折线图
+            ax.plot(range(len(dates)), total_scores, marker='o', linewidth=2.5, 
+                   markersize=8, label='总分', color='#16a085', zorder=3)
+            ax.plot(range(len(dates)), required_scores, marker='s', linewidth=1.5, 
+                   markersize=6, label='必选项', color='#3498db', alpha=0.7)
+            ax.plot(range(len(dates)), category1_scores, marker='^', linewidth=1.5, 
+                   markersize=6, label='第一类选考', color='#2ecc71', alpha=0.7)
+            ax.plot(range(len(dates)), category2_scores, marker='d', linewidth=1.5, 
+                   markersize=6, label='第二类选考', color='#f39c12', alpha=0.7)
+            
+            # 设置标题和标签
+            ax.set_title(f'{self.user.name} - 成绩趋势分析', 
+                        fontsize=14, fontweight='bold', pad=15)
+            ax.set_xlabel('测试日期', fontsize=11)
+            ax.set_ylabel('得分', fontsize=11)
+            
+            # 设置x轴刻度
+            ax.set_xticks(range(len(dates)))
+            ax.set_xticklabels(dates, rotation=30, ha='right', fontsize=9)
+            
+            # 设置y轴范围
+            ax.set_ylim(0, 10.5)
+            ax.set_yticks(range(0, 11, 2))
+            
+            # 添加网格
+            ax.grid(True, linestyle='--', alpha=0.3, zorder=0)
+            
+            # 添加图例
+            ax.legend(loc='best', fontsize=10, framealpha=0.9)
+            
+            # 调整布局
+            fig.tight_layout()
+            
+            # 嵌入到tkinter
+            canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
+            canvas.draw()
+            canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+            
         except Exception as e:
-            messagebox.showerror("生成失败", f"生成趋势图时发生错误:\n{str(e)}")
+            print(f"渲染图表错误: {e}")
+            import traceback
+            traceback.print_exc()
+            
+            label = tk.Label(
+                self.chart_frame,
+                text=f"❌ 图表渲染失败\n\n{str(e)}",
+                font=("Microsoft YaHei", 11),
+                bg=self.THEME_CARD,
+                fg=self.THEME_DANGER
+            )
+            label.place(relx=0.5, rely=0.5, anchor="center")
+    
+    def refresh_chart(self):
+        """刷新图表"""
+        self.render_chart_in_window()
+    
+    def generate_trend_chart(self):
+        """生成趋势图（已废弃，保留兼容性）"""
+        # 图表现在直接在窗口中显示，无需单独生成
+        messagebox.showinfo("提示", "图表已在上方显示\n\n如需导出，请点击\"导出图表\"按钮")
     
     def export_chart(self):
         """导出图表"""
@@ -1036,8 +1150,57 @@ class ReportWindow:
             return
         
         try:
-            chart_path = self.chart_generator.generate_score_trend_chart(records, self.user.name, file_path)
-            messagebox.showinfo("导出成功", f"图表已导出到:\n{chart_path}")
+            # 使用matplotlib直接生成并保存
+            plt.rcParams['font.sans-serif'] = ['Arial Unicode MS', 'SimHei', 'Microsoft YaHei']
+            plt.rcParams['axes.unicode_minus'] = False
+            
+            fig, ax = plt.subplots(figsize=(12, 6), dpi=150)
+            
+            # 准备数据
+            dates = [r['date'] for r in records]
+            total_scores = [r['scores']['total'] for r in records]
+            required_scores = [r['scores']['required'] for r in records]
+            category1_scores = [r['scores']['category1'] for r in records]
+            category2_scores = [r['scores']['category2'] for r in records]
+            
+            # 绘制折线图
+            ax.plot(range(len(dates)), total_scores, marker='o', linewidth=3, 
+                   markersize=10, label='总分', color='#16a085', zorder=3)
+            ax.plot(range(len(dates)), required_scores, marker='s', linewidth=2, 
+                   markersize=8, label='必选项', color='#3498db', alpha=0.7)
+            ax.plot(range(len(dates)), category1_scores, marker='^', linewidth=2, 
+                   markersize=8, label='第一类选考', color='#2ecc71', alpha=0.7)
+            ax.plot(range(len(dates)), category2_scores, marker='d', linewidth=2, 
+                   markersize=8, label='第二类选考', color='#f39c12', alpha=0.7)
+            
+            # 设置标题和标签
+            ax.set_title(f'{self.user.name} - 成绩趋势分析', 
+                        fontsize=18, fontweight='bold', pad=20)
+            ax.set_xlabel('测试日期', fontsize=14)
+            ax.set_ylabel('得分', fontsize=14)
+            
+            # 设置x轴刻度
+            ax.set_xticks(range(len(dates)))
+            ax.set_xticklabels(dates, rotation=30, ha='right', fontsize=12)
+            
+            # 设置y轴范围
+            ax.set_ylim(0, 10.5)
+            ax.set_yticks(range(0, 11, 2))
+            
+            # 添加网格
+            ax.grid(True, linestyle='--', alpha=0.3, zorder=0)
+            
+            # 添加图例
+            ax.legend(loc='best', fontsize=12, framealpha=0.9)
+            
+            # 调整布局
+            fig.tight_layout()
+            
+            # 保存
+            fig.savefig(file_path, dpi=150, bbox_inches='tight')
+            plt.close(fig)
+            
+            messagebox.showinfo("导出成功", f"图表已导出到:\n{file_path}")
         except Exception as e:
             messagebox.showerror("导出失败", f"导出图表时发生错误:\n{str(e)}")
     
