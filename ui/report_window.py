@@ -124,6 +124,14 @@ class ReportWindow:
         self.current_score_tab.show_no_data()
         self.analysis_tab.show_no_data()
     
+    def refresh_data(self, updated_user: User = None):
+        """刷新数据 - 使用最新的用户数据更新报告"""
+        if updated_user:
+            self.user = updated_user
+        
+        # 重新加载所有数据
+        self.load_user_data()
+    
     def show(self):
         """显示窗口"""
         self.window.mainloop()

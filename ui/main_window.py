@@ -29,6 +29,7 @@ class MainWindow:
     def __init__(self):
         self.data_manager = DataManager()
         self.current_user: Optional[User] = None
+        self.report_window_instance = None  # 追踪报告窗口实例
         
         self.setup_ui()
         self.load_last_user()  # 启动时自动加载上次登录的用户
@@ -153,6 +154,9 @@ class MainWindow:
     def reload_current_user(self):
         """重新加载当前用户数据（从文件读取最新数据）"""
         if self.current_user:
+            # 强制从文件重新加载所有数据（解决缓存问题）
+            self.data_manager.load_data()
+            
             # 从DataManager重新加载用户
             updated_user = self.data_manager.find_user_by_id(self.current_user.id)
             if updated_user:
@@ -217,9 +221,29 @@ class MainWindow:
             messagebox.showwarning(UI_TEXTS["input_error"], UI_TEXTS["no_records"])
             return
         
-        # 传递最新的用户数据给报告窗口
-        report_window = ReportWindow(self.current_user, self.window)
-        report_window.show()
+        # 检查报告窗口是否已存在
+        if self.report_window_instance and hasattr(self.report_window_instance, 'window'):
+            try:
+                # 检查窗口是否还存在
+                if self.report_window_instance.window.winfo_exists():
+                    # 窗口存在，刷新数据并置顶
+                    self.report_window_instance.refresh_data(self.current_user)
+                    self.report_window_instance.window.lift()
+                    self.report_window_instance.window.focus_force()
+                    return
+            except Exception as e:
+                # 窗口已销毁，清除引用
+                self.report_window_instance = None
+        
+        # 创建新的报告窗口
+        self.report_window_instance = ReportWindow(self.current_user, self.window)
+        
+        # 绑定窗口关闭事件，清除引用
+        def on_close():
+            self.report_window_instance.destroy()
+            self.report_window_instance = None
+        
+        self.report_window_instance.window.protocol("WM_DELETE_WINDOW", on_close)
     
     def save_last_user(self, user_id: str):
         """保存上次登录的用户ID到配置文件"""
