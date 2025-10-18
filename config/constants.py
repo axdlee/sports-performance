@@ -263,3 +263,202 @@ SCORE_STATUS = {
     "medium": {"threshold": 5.0, "label": "中等", "color": "#f39c12"},
     "needs_improvement": {"threshold": 0.0, "label": "需改进", "color": "#e74c3c"}
 }
+
+# ========== UI组件配置 ==========
+
+# CustomButton 默认配置
+CUSTOM_BUTTON_CONFIG = {
+    "default_bg": "#3498db",           # 默认背景色
+    "default_fg": "white",             # 默认前景色
+    "default_font": ("Microsoft YaHei", 11, "bold"),  # 默认字体
+    "default_width": 20,               # 默认宽度（字符数）
+    "default_height": 2,               # 默认高度（行数）
+    "disabled_bg": "#bdc3c7",          # 禁用状态背景色
+    "disabled_fg": "#7f8c8d",          # 禁用状态前景色
+    "hover_darken_factor": 0.8,        # 悬停时变暗系数
+    "press_darken_factor": 0.8,        # 按下时变暗系数
+    "cursor": "hand2"                  # 光标样式
+}
+
+# 窗口尺寸配置
+WINDOW_SIZES = {
+    "main": "500x550",         # 主窗口
+    "login": "600x700",        # 登录窗口
+    "input": "750x700",        # 成绩录入窗口
+    "report": "1100x800"       # 成绩报告窗口
+}
+
+# InputWindow 配置
+INPUT_WINDOW_CONFIG = {
+    "bg_color": "#ecf0f1",
+    "title_bg": "#16a085",
+    "title_fg": "white",
+    "title_font": ("Microsoft YaHei", 22, "bold"),
+    "subtitle_font": ("Arial", 9),
+    "frame_bg": "#ffffff",
+    "frame_fg": "#2c3e50",
+    "label_font_bold": ("Microsoft YaHei", 11, "bold"),
+    "label_font_normal": ("Microsoft YaHei", 11),
+    "label_font_small": ("Microsoft YaHei", 10),
+    "label_font_tiny": ("Microsoft YaHei", 9),
+    "entry_font": ("Arial", 12),
+    "score_font": ("Microsoft YaHei", 18, "bold"),
+    "section_font": ("Microsoft YaHei", 12, "bold"),
+    "required_color": "#c0392b",      # 必选项颜色
+    "category1_color": "#2980b9",     # 第一类选考颜色
+    "category2_color": "#e67e22",     # 第二类选考颜色
+    "label_primary_color": "#16a085", # 主标签颜色
+    "label_secondary_color": "#34495e", # 次要标签颜色
+    "label_hint_color": "#95a5a6",    # 提示文字颜色
+    "score_display_color": "#3498db", # 得分显示颜色
+    "score_total_color": "#e74c3c",   # 总分显示颜色
+    "save_button_bg": "#2ecc71",      # 保存按钮背景色
+    "reset_button_bg": "#95a5a6"      # 重置按钮背景色
+}
+
+# LoginWindow 配置
+LOGIN_WINDOW_CONFIG = {
+    "bg_color": "#ecf0f1",
+    "title_bg": "#16a085",
+    "title_fg": "white",
+    "title_font": ("Microsoft YaHei", 22, "bold"),
+    "subtitle_font": ("Arial", 9),
+    "frame_bg": "#ffffff",
+    "frame_fg": "#2c3e50",
+    "label_font_bold": ("Microsoft YaHei", 11, "bold"),
+    "label_font_normal": ("Microsoft YaHei", 11),
+    "label_font_small": ("Microsoft YaHei", 10),
+    "entry_font": ("Microsoft YaHei", 11),
+    "section_font": ("Microsoft YaHei", 12, "bold"),
+    "label_primary_color": "#16a085",
+    "label_secondary_color": "#34495e",
+    "label_hint_color": "#7f8c8d",
+    "male_color": "#3498db",          # 男生颜色
+    "female_color": "#e74c3c",        # 女生颜色
+    "card_bg": "#f8f9fa",             # 用户卡片背景色
+    "card_hover_bg": "#e8f4f8",       # 用户卡片悬停色
+    "card_text_color": "#2c3e50",     # 卡片文字颜色
+    "card_hint_color": "#7f8c8d",     # 卡片提示颜色
+    "login_button_bg": "#3498db",     # 登录按钮颜色
+    "register_button_bg": "#2ecc71"   # 注册按钮颜色
+}
+
+# MainWindow 配置
+MAIN_WINDOW_CONFIG = {
+    "bg_color": "#ecf0f1",
+    "title_bg": "#16a085",
+    "title_fg": "white",
+    "title_font": ("Microsoft YaHei", 22, "bold"),
+    "subtitle_font": ("Arial", 9),
+    "frame_bg": "#ffffff",
+    "frame_fg": "#2c3e50",
+    "label_font_bold": ("Microsoft YaHei", 11, "bold"),
+    "label_font_normal": ("Microsoft YaHei", 12),
+    "label_font_small": ("Microsoft YaHei", 10),
+    "status_font": ("Microsoft YaHei", 10),
+    "button_font": ("Microsoft YaHei", 12, "bold"),
+    "user_info_text_color": "#34495e",
+    "status_text_color": "#7f8c8d",
+    "login_button_bg": "#3498db",
+    "switch_user_button_bg": "#9b59b6",  # 切换用户按钮颜色
+    "input_button_bg": "#2ecc71",
+    "report_button_bg": "#e67e22",
+    "exit_button_bg": "#95a5a6",
+    "disabled_button_bg": "#bdc3c7"
+}
+
+# 通用UI文本
+UI_TEXTS = {
+    "welcome": "💡 欢迎使用体育成绩评估系统",
+    "not_logged_in": "未登录",
+    "please_login": "请先登录",
+    "no_records": "暂无成绩记录，请先录入成绩",
+    "no_users": "暂无用户，请注册新用户",
+    "save_success": "✅ 成绩已保存！",
+    "login_success": "✅ 欢迎，{}！",
+    "auto_login": "✅ 自动登录: {}",
+    "selected_user": "✅ 已选择用户: {}",
+    "user_info_format": "✅ {} ({}) - 记录: {}条",
+    "confirm_exit": "确认退出",
+    "exit_message": "确定要退出程序吗？",
+    "input_error": "输入错误",
+    "save_error": "保存失败",
+    "login_failed": "登录失败",
+    "register_failed": "注册失败",
+    "user_exists": "用户 '{}' 已存在",
+    "user_not_found": "用户不存在",
+    "gender_mismatch": "性别信息不匹配",
+    "register_prompt": "用户 '{}' 不存在，是否注册新用户？",
+    "view_report_prompt": "成绩已保存！总分: {:.1f}\n\n是否查看成绩报告？"
+}
+
+# 输入提示文本
+INPUT_HINTS = {
+    "spinbox_hint": "💡 使用上下箭头或直接输入数字",
+    "required_time": "请输入必选项成绩",
+    "seconds_range": "秒钟数必须小于60",
+    "select_category1": "请选择第一类选考项目",
+    "input_category1": "请输入第一类选考成绩",
+    "select_category2": "请选择第二类选考项目",
+    "input_category2": "请输入第二类选考成绩"
+}
+
+# 项目标签配置
+PROJECT_LABELS = {
+    "50m": "50米跑 (秒)",
+    "sit_reach": "坐位体前屈 (厘米)",
+    "standing_jump": "立定跳远 (厘米)",
+    "pull_ups": "引体向上 (次)",
+    "sit_ups": "仰卧起坐 (次)",
+    "basketball": "篮球运球 (秒)",
+    "football": "足球运球 (秒)",
+    "volleyball": "排球垫球 (次)"
+}
+
+# 性别图标和文本
+GENDER_CONFIG = {
+    "male": {
+        "icon": "👨",
+        "text": "男",
+        "color": "#3498db"
+    },
+    "female": {
+        "icon": "👩",
+        "text": "女",
+        "color": "#e74c3c"
+    }
+}
+
+# 窗口标题配置
+WINDOW_TITLES = {
+    "main": "体育成绩评估系统",
+    "login": "用户登录 - 体育成绩评估系统",
+    "input": "成绩录入 - {}",
+    "report": "📊 成绩报告 - {}"
+}
+
+# 按钮文本配置
+BUTTON_TEXTS = {
+    "login": "🔑 登录",
+    "switch_user": "🔄 切换用户",
+    "register": "📝 注册新用户",
+    "user_login": "🔑 用户登录",
+    "input_score": "📝 成绩录入",
+    "view_report": "📊 成绩报告",
+    "exit": "❌ 退出程序",
+    "save": "💾 保存成绩",
+    "reset": "🔄 重置",
+    "refresh_chart": "🔄 刷新图表",
+    "export_chart": "💾 导出图表"
+}
+
+# LabelFrame标题配置
+LABEL_FRAME_TITLES = {
+    "required": " 🏃 必选项 (10分) ",
+    "category1": " 💪 第一类选考 (10分) ",
+    "category2": " ⚽ 第二类选考 (10分) ",
+    "total_score": " 📊 总分计算 ",
+    "user_info": " 👤 用户信息 ",
+    "current_user": " 👤 当前用户 ",
+    "existing_users": " 📋 已有用户 (点击选择) "
+}
