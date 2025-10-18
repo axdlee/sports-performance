@@ -10,7 +10,7 @@
 
 ```bash
 # 在 GitHub 网站上创建新仓库，然后关联本地仓库
-git remote add origin https://github.com/你的用户名/sports-performance.git
+git remote add origin https://github.com/axdlee/sports-performance.git
 git branch -M main
 git push -u origin main
 ```
@@ -189,8 +189,8 @@ build-linux:
 在 README.md 中添加构建状态徽章：
 
 ```markdown
-![Build Windows](https://github.com/你的用户名/sports-performance/workflows/Build%20Windows%20Installer/badge.svg)
-![Build All](https://github.com/你的用户名/sports-performance/workflows/Build%20All%20Platforms/badge.svg)
+![Build Windows](https://github.com/axdlee/sports-performance/workflows/Build%20Windows%20Installer/badge.svg)
+![Build All](https://github.com/axdlee/sports-performance/workflows/Build%20All%20Platforms/badge.svg)
 ```
 
 ## 🔐 安全注意事项
@@ -229,7 +229,7 @@ git tag -a v1.3.1 -m "Release version 1.3.1"
 git push origin v1.3.1
 
 # 4. 等待 10-15 分钟，然后访问 Releases 页面下载
-# https://github.com/你的用户名/sports-performance/releases
+# https://github.com/axdlee/sports-performance/releases
 ```
 
 ### 测试构建（不创建 Release）
