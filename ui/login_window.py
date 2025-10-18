@@ -104,6 +104,7 @@ class LoginWindow:
                                      bg="#3498db", fg="white",
                                      width=12, height=1,
                                      relief=tk.FLAT, bd=0,
+                                     highlightthickness=0,
                                      cursor="hand2",
                                      activebackground="#2980b9",
                                      activeforeground="white")
@@ -116,6 +117,7 @@ class LoginWindow:
                                         bg="#2ecc71", fg="white",
                                         width=12, height=1,
                                         relief=tk.FLAT, bd=0,
+                                        highlightthickness=0,
                                         cursor="hand2",
                                         activebackground="#27ae60",
                                         activeforeground="white")

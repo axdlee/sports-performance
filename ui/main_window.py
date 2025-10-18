@@ -10,6 +10,7 @@ from models.user import User
 from ui.login_window import LoginWindow
 from ui.input_window import InputWindow
 from ui.report_window import ReportWindow
+from ui.custom_button import CustomButton
 from services.data_manager import DataManager
 
 
@@ -73,56 +74,50 @@ class MainWindow:
         button_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 登录按钮
-        self.login_button = tk.Button(button_frame, text="🔑 用户登录", 
-                                     command=self.show_login_window,
-                                     font=("Microsoft YaHei", 12, "bold"),
-                                     bg="#3498db", fg="white",
-                                     width=18, height=2,
-                                     relief=tk.FLAT, bd=0,
-                                     cursor="hand2",
-                                     activebackground="#2980b9",
-                                     activeforeground="white")
-        self.login_button.pack(pady=8)
+        self.login_button = CustomButton(button_frame, text="🔑 用户登录", 
+                                        command=self.show_login_window,
+                                        font=("Microsoft YaHei", 12, "bold"),
+                                        bg="#3498db", fg="white",
+                                        width=8, height=1,
+                                        activebackground="#2980b9",
+                                        activeforeground="white")
+        self.login_button.pack(pady=8, fill=tk.X)
         
         # 成绩录入按钮
-        self.input_button = tk.Button(button_frame, text="📝 成绩录入", 
-                                     command=self.show_input_window,
-                                     font=("Microsoft YaHei", 12, "bold"),
-                                     bg="#2ecc71", fg="white",
-                                     width=18, height=2,
-                                     relief=tk.FLAT, bd=0,
-                                     cursor="hand2",
-                                     state=tk.DISABLED,
-                                     disabledforeground="#95a5a6",
-                                     activebackground="#27ae60",
-                                     activeforeground="white")
-        self.input_button.pack(pady=8)
+        self.input_button = CustomButton(button_frame, text="📝 成绩录入", 
+                                        command=self.show_input_window,
+                                        font=("Microsoft YaHei", 12, "bold"),
+                                        bg="#2ecc71", fg="white",
+                                        width=8, height=1,
+                                        state=tk.DISABLED,
+                                        activebackground="#27ae60",
+                                        activeforeground="white")
+        self.input_button.pack(pady=8, fill=tk.X)
+        self.input_button_enabled_bg = "#2ecc71"
+        self.input_button_disabled_bg = "#bdc3c7"
         
         # 成绩报告按钮
-        self.report_button = tk.Button(button_frame, text="📊 成绩报告", 
-                                      command=self.show_report_window,
-                                      font=("Microsoft YaHei", 12, "bold"),
-                                      bg="#e67e22", fg="white",
-                                      width=18, height=2,
-                                      relief=tk.FLAT, bd=0,
-                                      cursor="hand2",
-                                      state=tk.DISABLED,
-                                      disabledforeground="#95a5a6",
-                                      activebackground="#d35400",
-                                      activeforeground="white")
-        self.report_button.pack(pady=8)
+        self.report_button = CustomButton(button_frame, text="📊 成绩报告", 
+                                         command=self.show_report_window,
+                                         font=("Microsoft YaHei", 12, "bold"),
+                                         bg="#e67e22", fg="white",
+                                         width=8, height=1,
+                                         state=tk.DISABLED,
+                                         activebackground="#d35400",
+                                         activeforeground="white")
+        self.report_button.pack(pady=8, fill=tk.X)
+        self.report_button_enabled_bg = "#e67e22"
+        self.report_button_disabled_bg = "#bdc3c7"
         
         # 退出按钮
-        self.exit_button = tk.Button(button_frame, text="❌ 退出程序", 
-                                     command=self.exit_application,
-                                     font=("Microsoft YaHei", 12, "bold"),
-                                     bg="#95a5a6", fg="white",
-                                     width=18, height=2,
-                                     relief=tk.FLAT, bd=0,
-                                     cursor="hand2",
-                                     activebackground="#7f8c8d",
-                                     activeforeground="white")
-        self.exit_button.pack(pady=8)
+        self.exit_button = CustomButton(button_frame, text="❌ 退出程序", 
+                                        command=self.exit_application,
+                                        font=("Microsoft YaHei", 12, "bold"),
+                                        bg="#95a5a6", fg="white",
+                                        width=8, height=1,
+                                        activebackground="#7f8c8d",
+                                        activeforeground="white")
+        self.exit_button.pack(pady=8, fill=tk.X)
         
         # 状态栏
         self.status_var = tk.StringVar(value="💡 欢迎使用体育成绩评估系统")
@@ -162,11 +157,13 @@ class MainWindow:
             self.user_info_var.set(user_info)
             
             # 启用功能按钮并更新样式
-            self.input_button.config(state=tk.NORMAL, bg="#2ecc71")
-            self.report_button.config(state=tk.NORMAL, bg="#e67e22")
+            self.input_button.config(state=tk.NORMAL, bg=self.input_button_enabled_bg, 
+                                    fg="white", cursor="hand2")
+            self.report_button.config(state=tk.NORMAL, bg=self.report_button_enabled_bg,
+                                     fg="white", cursor="hand2")
             
             # 禁用登录按钮并更新样式
-            self.login_button.config(state=tk.DISABLED, bg="#bdc3c7")
+            self.login_button.config(state=tk.DISABLED, bg="#bdc3c7", fg="#7f8c8d", cursor="")
     
     def show_input_window(self):
         """显示成绩录入窗口"""

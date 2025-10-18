@@ -155,6 +155,7 @@ class InputWindow:
                                     bg="#27ae60", fg="white",
                                     width=14, height=2,
                                     relief=tk.FLAT, bd=0,
+                                    highlightthickness=0,
                                     cursor="hand2",
                                     activebackground="#229954",
                                     activeforeground="white")
@@ -167,6 +168,7 @@ class InputWindow:
                                       bg="#95a5a6", fg="white",
                                       width=14, height=2,
                                       relief=tk.FLAT, bd=0,
+                                      highlightthickness=0,
                                       cursor="hand2",
                                       activebackground="#7f8c8d",
                                       activeforeground="white")
@@ -225,15 +227,15 @@ class InputWindow:
     def bind_events(self):
         """绑定事件"""
         # 必选项输入变化
-        self.required_var.trace('w', self.on_required_change)
+        self.required_var.trace_add('write', self.on_required_change)
         
         # 第一类选考变化
-        self.category1_var.trace('w', self.on_category1_change)
-        self.category1_var_value.trace('w', self.on_category1_value_change)
+        self.category1_var.trace_add('write', self.on_category1_change)
+        self.category1_var_value.trace_add('write', self.on_category1_value_change)
         
         # 第二类选考变化
-        self.category2_var.trace('w', self.on_category2_change)
-        self.category2_var_value.trace('w', self.on_category2_value_change)
+        self.category2_var.trace_add('write', self.on_category2_change)
+        self.category2_var_value.trace_add('write', self.on_category2_value_change)
     
     def on_required_change(self, *args):
         """必选项输入变化"""
