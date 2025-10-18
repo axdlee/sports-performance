@@ -1,0 +1,151 @@
+name: Build All Platforms
+
+on:
+  push:
+    tags:
+      - 'v*'  # 当推送 v 开头的标签时触发，如 v1.0.0
+  workflow_dispatch:  # 允许手动触发
+    inputs:
+      version:
+        description: '版本号 (例如: 1.3.1)'
+        required: false
+        default: '1.3.1'
+
+jobs:
+  build-windows:
+    name: Build Windows
+    runs-on: windows-latest
+    
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 构建 Windows 安装包
+        run: python build.py
+      
+      - name: 创建 ZIP 压缩包
+        run: |
+          $version = "${{ github.event.inputs.version }}"
+          if ([string]::IsNullOrEmpty($version)) {
+            $version = "${{ github.ref_name }}" -replace '^v', ''
+          }
+          if ([string]::IsNullOrEmpty($version)) {
+            $version = "1.3.1"
+          }
+          $zipName = "体育成绩评估系统-v$version-Windows.zip"
+          Compress-Archive -Path "dist/installer_windows/*" -DestinationPath "dist/$zipName"
+        shell: powershell
+      
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-installer
+          path: dist/*.zip
+          retention-days: 30
+
+  build-macos:
+    name: Build macOS
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout 代码
+        uses: actions/checkout@v4
+      
+      - name: 设置 Python 环境
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: 构建 macOS 安装包
+        run: python build.py
+      
+      - name: 创建 ZIP 压缩包
+        run: |
+          version="${{ github.event.inputs.version }}"
+          if [ -z "$version" ]; then
+            version="${{ github.ref_name }}"
+            version="${version#v}"
+          fi
+          if [ -z "$version" ]; then
+            version="1.3.1"
+          fi
+          cd dist/installer_macos
+          zip -r "../体育成绩评估系统-v${version}-macOS.zip" .
+      
+      - name: 上传构建产物
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-installer
+          path: dist/*.zip
+          retention-days: 30
+
+  create-release:
+    name: Create Release
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+      - name: 下载所有构建产物
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: 创建 Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/windows-installer/*.zip
+            artifacts/macos-installer/*.zip
+          body: |
+            ## 体育成绩评估系统 跨平台安装包
+            
+            ### 下载说明
+            
+            #### Windows 用户
+            - 下载 `体育成绩评估系统-*-Windows.zip`
+            - 解压到任意位置
+            - 运行 `体育成绩评估系统.exe` 或 `启动程序.bat`
+            
+            #### macOS 用户
+            - 下载 `体育成绩评估系统-*-macOS.zip`
+            - 解压后将 `.app` 拖到应用程序文件夹
+            - 首次打开右键选择"打开"
+            
+            ### 系统要求
+            - **Windows**: Windows 10 或更高版本
+            - **macOS**: macOS 10.13 或更高版本
+            - 约 100MB 磁盘空间
+            - 无需安装 Python 环境
+            
+            ### 功能特性
+            - ✨ 用户注册和登录管理
+            - 📊 体育成绩录入和自动计算
+            - 📈 历史数据查看和趋势分析
+            - 💾 数据备份和恢复功能
+            - 🎨 友好的图形界面
+            
+            ### 数据存储位置
+            - **Windows**: `%APPDATA%\SportsPerformance\`
+            - **macOS**: `~/Library/Application Support/SportsPerformance/`
+            
+            详细说明请查看压缩包内的 README.txt 文件。
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
