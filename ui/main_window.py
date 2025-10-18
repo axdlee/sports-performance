@@ -147,6 +147,14 @@ class MainWindow:
         self.update_ui_after_login()
         self.status_var.set(f"✅ 欢迎，{user.name}！")
     
+    def reload_current_user(self):
+        """重新加载当前用户数据（从文件读取最新数据）"""
+        if self.current_user:
+            # 从DataManager重新加载用户
+            updated_user = self.data_manager.find_user_by_id(self.current_user.id)
+            if updated_user:
+                self.current_user = updated_user
+    
     def update_ui_after_login(self):
         """登录后更新界面"""
         if self.current_user:
@@ -177,6 +185,9 @@ class MainWindow:
     
     def on_score_saved(self, record_data):
         """成绩保存成功回调"""
+        # 重新加载用户数据以获取最新记录
+        self.reload_current_user()
+        
         # 更新用户信息显示
         self.update_ui_after_login()
         
@@ -193,6 +204,9 @@ class MainWindow:
         if not self.current_user:
             messagebox.showerror("错误", "请先登录")
             return
+        
+        # 重新加载用户数据以确保显示最新记录
+        self.reload_current_user()
         
         if not self.current_user.records:
             messagebox.showwarning("无数据", "暂无成绩记录，请先录入成绩")

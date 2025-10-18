@@ -10,6 +10,7 @@ from config.scoring_standards import parse_time_to_seconds, get_scoring_data
 from models.user import User
 from models.score import ScoreRecord
 from services.score_calculator import ScoreCalculator
+from services.data_manager import DataManager
 from utils.validator import DataValidator
 from config.constants import GENDER_MALE, GENDER_FEMALE, PROJECT_NAMES
 from ui.custom_button import CustomButton
@@ -22,6 +23,7 @@ class InputWindow:
         self.user = user
         self.parent = parent
         self.score_calculator = ScoreCalculator()
+        self.data_manager = DataManager()
         self.on_save_success: Optional[Callable] = None
         
         self.setup_ui()
@@ -32,7 +34,7 @@ class InputWindow:
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
         self.window.title(f"成绩录入 - {self.user.name}")
-        self.window.geometry("700x800")
+        self.window.geometry("750x700")
         self.window.resizable(False, False)
         
         # 设置窗口背景色
@@ -41,9 +43,53 @@ class InputWindow:
         # 设置窗口居中
         self.center_window()
         
-        # 创建主框架
-        main_frame = tk.Frame(self.window, bg="#ecf0f1", padx=30, pady=25)
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        # 创建外层容器
+        outer_frame = tk.Frame(self.window, bg="#ecf0f1")
+        outer_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # 创建Canvas和滚动条
+        canvas = tk.Canvas(outer_frame, bg="#ecf0f1", highlightthickness=0)
+        scrollbar = tk.Scrollbar(outer_frame, orient=tk.VERTICAL, command=canvas.yview)
+        
+        # 创建可滚动的主框架
+        main_frame = tk.Frame(canvas, bg="#ecf0f1", padx=30, pady=25)
+        
+        # 配置Canvas
+        main_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas_window = canvas.create_window((0, 0), window=main_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        # 布局Canvas和滚动条
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        
+        # 绑定鼠标滚轮事件
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        
+        self._mousewheel_handler = _on_mousewheel
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+        
+        # 窗口关闭时解绑事件
+        def _on_closing():
+            canvas.unbind_all("<MouseWheel>")
+            self.window.destroy()
+        
+        self.window.protocol("WM_DELETE_WINDOW", _on_closing)
+        
+        # 确保Canvas宽度自适应
+        def _configure_canvas(event):
+            canvas.itemconfig(canvas_window, width=event.width)
+        
+        canvas.bind("<Configure>", _configure_canvas)
+        
+        # 保存引用以便后续使用
+        self.canvas = canvas
+        self.scrollbar = scrollbar
         
         # 标题框架
         title_frame = tk.Frame(main_frame, bg="#16a085", pady=25)
@@ -591,15 +637,16 @@ class InputWindow:
                 "total_score": scores["total"]
             }
             
-            # 保存记录
-            self.user.add_record(record_data)
-            
-            messagebox.showinfo("保存成功", f"成绩已保存！\n总分: {scores['total']:.1f}")
-            
-            if self.on_save_success:
-                self.on_save_success(record_data)
-            
-            self.handle_reset()
+            # 使用DataManager保存记录（会自动添加到用户对象并保存到文件）
+            if self.data_manager.add_score_record(self.user.id, record_data):
+                messagebox.showinfo("保存成功", f"成绩已保存！\n总分: {scores['total']:.1f}")
+                
+                if self.on_save_success:
+                    self.on_save_success(record_data)
+                
+                self.handle_reset()
+            else:
+                messagebox.showerror("保存失败", "无法保存成绩记录，请检查用户是否存在")
             
         except Exception as e:
             messagebox.showerror("保存失败", f"保存成绩时发生错误: {str(e)}")
