@@ -6,12 +6,13 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from typing import Optional, Callable, Dict
-from config.scoring_standards import parse_time_to_seconds
+from config.scoring_standards import parse_time_to_seconds, get_scoring_data
 from models.user import User
 from models.score import ScoreRecord
 from services.score_calculator import ScoreCalculator
 from utils.validator import DataValidator
 from config.constants import GENDER_MALE, GENDER_FEMALE, PROJECT_NAMES
+from ui.custom_button import CustomButton
 
 
 class InputWindow:
@@ -31,148 +32,199 @@ class InputWindow:
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
         self.window.title(f"成绩录入 - {self.user.name}")
-        self.window.geometry("650x750")
+        self.window.geometry("700x800")
         self.window.resizable(False, False)
         
         # 设置窗口背景色
-        self.window.configure(bg="#f5f7fa")
+        self.window.configure(bg="#ecf0f1")
         
         # 设置窗口居中
         self.center_window()
         
         # 创建主框架
-        main_frame = tk.Frame(self.window, bg="#f5f7fa", padx=25, pady=20)
+        main_frame = tk.Frame(self.window, bg="#ecf0f1", padx=30, pady=25)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
         # 标题框架
-        title_frame = tk.Frame(main_frame, bg="#27ae60", pady=20)
-        title_frame.pack(fill=tk.X, pady=(0, 25))
+        title_frame = tk.Frame(main_frame, bg="#16a085", pady=25)
+        title_frame.pack(fill=tk.X, pady=(0, 30))
         
         # 标题
         title_label = tk.Label(title_frame, text=f"📝 成绩录入 - {self.user.name}", 
-                               font=("Microsoft YaHei", 18, "bold"),
-                               bg="#27ae60", fg="white")
+                               font=("Microsoft YaHei", 22, "bold"),
+                               bg="#16a085", fg="white")
         title_label.pack()
+        
+        # 副标题
+        subtitle_label = tk.Label(title_frame, text="Score Entry System",
+                                 font=("Arial", 9),
+                                 bg="#16a085", fg="#ecf0f1")
+        subtitle_label.pack(pady=(5, 0))
         
         # 必选项框架
         required_frame = tk.LabelFrame(main_frame, text=" 🏃 必选项 (10分) ", 
-                                       font=("Microsoft YaHei", 11, "bold"),
+                                       font=("Microsoft YaHei", 12, "bold"),
                                        bg="#ffffff", fg="#c0392b",
-                                       padx=18, pady=12, relief=tk.FLAT, bd=0)
-        required_frame.pack(fill=tk.X, pady=(0, 15))
+                                       padx=25, pady=20, relief=tk.FLAT, bd=2)
+        required_frame.pack(fill=tk.X, pady=(0, 20))
         
-        # 必选项标签和输入框
-        self.required_label = ttk.Label(required_frame, text="", font=("Arial", 12))
-        self.required_label.pack(anchor=tk.W, pady=(0, 5))
+        # 必选项标签
+        self.required_label = tk.Label(required_frame, text="", 
+                                      font=("Microsoft YaHei", 11, "bold"),
+                                      bg="#ffffff", fg="#16a085")
+        self.required_label.pack(anchor=tk.W, pady=(0, 8))
         
-        self.required_var = tk.StringVar()
-        self.required_entry = ttk.Entry(required_frame, textvariable=self.required_var, 
-                                       width=20, font=("Arial", 11))
-        self.required_entry.pack(anchor=tk.W, pady=(0, 5))
+        # 时间输入框架（分钟和秒钟）
+        time_input_frame = tk.Frame(required_frame, bg="#ffffff")
+        time_input_frame.pack(anchor=tk.W, pady=(0, 10))
         
+        # 分钟输入
+        tk.Label(time_input_frame, text="分钟:", 
+                font=("Microsoft YaHei", 10),
+                bg="#ffffff", fg="#34495e").pack(side=tk.LEFT)
+        
+        self.required_minutes_var = tk.IntVar(value=0)
+        self.required_minutes_spinbox = tk.Spinbox(time_input_frame, 
+                                                   from_=0, to=10,
+                                                   textvariable=self.required_minutes_var,
+                                                   width=5, font=("Arial", 11),
+                                                   justify=tk.CENTER,
+                                                   relief=tk.SOLID, bd=1)
+        self.required_minutes_spinbox.pack(side=tk.LEFT, padx=(5, 15))
+        
+        # 秒钟输入
+        tk.Label(time_input_frame, text="秒钟:", 
+                font=("Microsoft YaHei", 10),
+                bg="#ffffff", fg="#34495e").pack(side=tk.LEFT)
+        
+        self.required_seconds_var = tk.IntVar(value=0)
+        self.required_seconds_spinbox = tk.Spinbox(time_input_frame, 
+                                                   from_=0, to=59,
+                                                   textvariable=self.required_seconds_var,
+                                                   width=5, font=("Arial", 11),
+                                                   justify=tk.CENTER,
+                                                   relief=tk.SOLID, bd=1)
+        self.required_seconds_spinbox.pack(side=tk.LEFT, padx=5)
+        
+        # 提示文本
+        hint_label = tk.Label(required_frame, text="💡 使用上下箭头或直接输入数字",
+                            font=("Microsoft YaHei", 9),
+                            bg="#ffffff", fg="#95a5a6")
+        hint_label.pack(anchor=tk.W, pady=(0, 8))
+        
+        # 得分显示
         self.required_score_var = tk.StringVar(value="得分: --")
-        self.required_score_label = ttk.Label(required_frame, textvariable=self.required_score_var, 
-                                            foreground="blue", font=("Arial", 10, "bold"))
+        self.required_score_label = tk.Label(required_frame, textvariable=self.required_score_var, 
+                                           font=("Microsoft YaHei", 11, "bold"),
+                                           bg="#ffffff", fg="#3498db")
         self.required_score_label.pack(anchor=tk.W)
         
         # 第一类选考框架
         category1_frame = tk.LabelFrame(main_frame, text=" 💪 第一类选考 (10分) ", 
-                                        font=("Microsoft YaHei", 11, "bold"),
+                                        font=("Microsoft YaHei", 12, "bold"),
                                         bg="#ffffff", fg="#2980b9",
-                                        padx=18, pady=12, relief=tk.FLAT, bd=0)
-        category1_frame.pack(fill=tk.X, pady=(0, 15))
+                                        padx=25, pady=20, relief=tk.FLAT, bd=2)
+        category1_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 项目选择
-        ttk.Label(category1_frame, text="选择项目:").pack(anchor=tk.W, pady=(0, 5))
+        tk.Label(category1_frame, text="选择项目",
+                font=("Microsoft YaHei", 11, "bold"),
+                bg="#ffffff", fg="#16a085").pack(anchor=tk.W, pady=(0, 5))
         self.category1_var = tk.StringVar()
         self.category1_combo = ttk.Combobox(category1_frame, textvariable=self.category1_var, 
-                                          state="readonly", width=20)
-        self.category1_combo.pack(anchor=tk.W, pady=(0, 10))
+                                          state="readonly", width=25, font=("Microsoft YaHei", 10))
+        self.category1_combo.pack(anchor=tk.W, pady=(0, 12))
         
         # 成绩输入
-        self.category1_label = ttk.Label(category1_frame, text="", font=("Arial", 12))
+        self.category1_label = tk.Label(category1_frame, text="",
+                                       font=("Microsoft YaHei", 11, "bold"),
+                                       bg="#ffffff", fg="#16a085")
         self.category1_label.pack(anchor=tk.W, pady=(0, 5))
         
         self.category1_var_value = tk.StringVar()
-        self.category1_entry = ttk.Entry(category1_frame, textvariable=self.category1_var_value, 
-                                        width=20, font=("Arial", 11))
-        self.category1_entry.pack(anchor=tk.W, pady=(0, 5))
+        self.category1_entry = tk.Entry(category1_frame, textvariable=self.category1_var_value, 
+                                        width=15, font=("Arial", 12),
+                                        relief=tk.SOLID, bd=1,
+                                        highlightthickness=1, highlightcolor="#16a085")
+        self.category1_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
         self.category1_score_var = tk.StringVar(value="得分: --")
-        self.category1_score_label = ttk.Label(category1_frame, textvariable=self.category1_score_var, 
-                                             foreground="blue", font=("Arial", 10, "bold"))
+        self.category1_score_label = tk.Label(category1_frame, textvariable=self.category1_score_var, 
+                                            font=("Microsoft YaHei", 11, "bold"),
+                                            bg="#ffffff", fg="#3498db")
         self.category1_score_label.pack(anchor=tk.W)
         
         # 第二类选考框架
         category2_frame = tk.LabelFrame(main_frame, text=" ⚽ 第二类选考 (10分) ", 
-                                        font=("Microsoft YaHei", 11, "bold"),
+                                        font=("Microsoft YaHei", 12, "bold"),
                                         bg="#ffffff", fg="#e67e22",
-                                        padx=18, pady=12, relief=tk.FLAT, bd=0)
-        category2_frame.pack(fill=tk.X, pady=(0, 15))
+                                        padx=25, pady=20, relief=tk.FLAT, bd=2)
+        category2_frame.pack(fill=tk.X, pady=(0, 20))
         
         # 项目选择
-        ttk.Label(category2_frame, text="选择项目:").pack(anchor=tk.W, pady=(0, 5))
+        tk.Label(category2_frame, text="选择项目",
+                font=("Microsoft YaHei", 11, "bold"),
+                bg="#ffffff", fg="#16a085").pack(anchor=tk.W, pady=(0, 5))
         self.category2_var = tk.StringVar()
         self.category2_combo = ttk.Combobox(category2_frame, textvariable=self.category2_var, 
-                                          state="readonly", width=20)
-        self.category2_combo.pack(anchor=tk.W, pady=(0, 10))
+                                          state="readonly", width=25, font=("Microsoft YaHei", 10))
+        self.category2_combo.pack(anchor=tk.W, pady=(0, 12))
         
         # 成绩输入
-        self.category2_label = ttk.Label(category2_frame, text="", font=("Arial", 12))
+        self.category2_label = tk.Label(category2_frame, text="",
+                                       font=("Microsoft YaHei", 11, "bold"),
+                                       bg="#ffffff", fg="#16a085")
         self.category2_label.pack(anchor=tk.W, pady=(0, 5))
         
         self.category2_var_value = tk.StringVar()
-        self.category2_entry = ttk.Entry(category2_frame, textvariable=self.category2_var_value, 
-                                        width=20, font=("Arial", 11))
-        self.category2_entry.pack(anchor=tk.W, pady=(0, 5))
+        self.category2_entry = tk.Entry(category2_frame, textvariable=self.category2_var_value, 
+                                        width=15, font=("Arial", 12),
+                                        relief=tk.SOLID, bd=1,
+                                        highlightthickness=1, highlightcolor="#16a085")
+        self.category2_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
         self.category2_score_var = tk.StringVar(value="得分: --")
-        self.category2_score_label = ttk.Label(category2_frame, textvariable=self.category2_score_var, 
-                                             foreground="blue", font=("Arial", 10, "bold"))
+        self.category2_score_label = tk.Label(category2_frame, textvariable=self.category2_score_var, 
+                                            font=("Microsoft YaHei", 11, "bold"),
+                                            bg="#ffffff", fg="#3498db")
         self.category2_score_label.pack(anchor=tk.W)
         
         # 总分显示框架
         total_frame = tk.LabelFrame(main_frame, text=" 📊 总分计算 ", 
-                                    font=("Microsoft YaHei", 11, "bold"),
+                                    font=("Microsoft YaHei", 12, "bold"),
                                     bg="#ffffff", fg="#16a085",
-                                    padx=18, pady=15, relief=tk.FLAT, bd=0)
-        total_frame.pack(fill=tk.X, pady=(0, 20))
+                                    padx=25, pady=20, relief=tk.FLAT, bd=2)
+        total_frame.pack(fill=tk.X, pady=(0, 25))
         
         self.total_score_var = tk.StringVar(value="总分: --")
         self.total_score_label = tk.Label(total_frame, textvariable=self.total_score_var, 
-                                         font=("Microsoft YaHei", 16, "bold"),
+                                         font=("Microsoft YaHei", 18, "bold"),
                                          bg="#ffffff", fg="#e74c3c")
         self.total_score_label.pack()
         
         # 按钮框架
-        button_frame = tk.Frame(main_frame, bg="#f5f7fa")
+        button_frame = tk.Frame(main_frame, bg="#ecf0f1")
         button_frame.pack(fill=tk.X)
         
         # 保存按钮
-        self.save_button = tk.Button(button_frame, text="💾 保存成绩", 
-                                    command=self.handle_save,
-                                    font=("Microsoft YaHei", 12, "bold"),
-                                    bg="#27ae60", fg="white",
-                                    width=14, height=2,
-                                    relief=tk.FLAT, bd=0,
-                                    highlightthickness=0,
-                                    cursor="hand2",
-                                    activebackground="#229954",
-                                    activeforeground="white")
-        self.save_button.pack(side=tk.LEFT, padx=(0, 15))
+        self.save_button = CustomButton(button_frame, text="💾 保存成绩", 
+                                        command=self.handle_save,
+                                        font=("Microsoft YaHei", 12, "bold"),
+                                        bg="#2ecc71", fg="white",
+                                        width=12, height=2,
+                                        activebackground="#27ae60",
+                                        activeforeground="white")
+        self.save_button.pack(side=tk.LEFT, padx=(0, 15), fill=tk.X, expand=True)
         
         # 重置按钮
-        self.reset_button = tk.Button(button_frame, text="🔄 重置", 
-                                      command=self.handle_reset,
-                                      font=("Microsoft YaHei", 12, "bold"),
-                                      bg="#95a5a6", fg="white",
-                                      width=14, height=2,
-                                      relief=tk.FLAT, bd=0,
-                                      highlightthickness=0,
-                                      cursor="hand2",
-                                      activebackground="#7f8c8d",
-                                      activeforeground="white")
-        self.reset_button.pack(side=tk.LEFT)
+        self.reset_button = CustomButton(button_frame, text="🔄 重置", 
+                                         command=self.handle_reset,
+                                         font=("Microsoft YaHei", 12, "bold"),
+                                         bg="#95a5a6", fg="white",
+                                         width=12, height=2,
+                                         activebackground="#7f8c8d",
+                                         activeforeground="white")
+        self.reset_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
         
         # 绑定事件
         self.bind_events()
@@ -190,7 +242,8 @@ class InputWindow:
         """根据性别更新界面"""
         if self.user.gender == GENDER_MALE:
             # 男生必选项
-            self.required_label.config(text="1000米跑 (秒，格式: 3'45\" 或 225)")
+            self.required_label.config(text="1000米跑")
+            self.required_project = "1000m"
             
             # 第一类选考项目
             category1_options = [
@@ -201,7 +254,8 @@ class InputWindow:
             ]
         else:
             # 女生必选项
-            self.required_label.config(text="800米跑 (秒，格式: 3'25\" 或 205)")
+            self.required_label.config(text="800米跑")
+            self.required_project = "800m"
             
             # 第一类选考项目
             category1_options = [
@@ -226,8 +280,9 @@ class InputWindow:
     
     def bind_events(self):
         """绑定事件"""
-        # 必选项输入变化
-        self.required_var.trace_add('write', self.on_required_change)
+        # 必选项输入变化（监听Spinbox变化）
+        self.required_minutes_var.trace_add('write', self.on_required_change)
+        self.required_seconds_var.trace_add('write', self.on_required_change)
         
         # 第一类选考变化
         self.category1_var.trace_add('write', self.on_category1_change)
@@ -272,6 +327,10 @@ class InputWindow:
     
     def update_category1_label(self, project_key: str):
         """更新第一类选考标签"""
+        # 获取该项目的评分标准范围
+        scoring_data = get_scoring_data(self.user.gender)
+        standards = scoring_data.get(project_key, [])
+        
         labels = {
             "50m": "50米跑 (秒)",
             "sit_reach": "坐位体前屈 (厘米)",
@@ -279,37 +338,103 @@ class InputWindow:
             "pull_ups": "引体向上 (次)",
             "sit_ups": "仰卧起坐 (次)"
         }
-        self.category1_label.config(text=labels.get(project_key, ""))
+        
+        label_text = labels.get(project_key, "")
+        
+        # 添加范围提示
+        if standards:
+            if project_key == "50m":  # 越小越好
+                min_val = standards[0][0]
+                max_val = standards[-1][0]
+                label_text += f" | 范围: {min_val:.1f}~{max_val:.1f}"
+            elif project_key in ["sit_reach", "standing_jump", "pull_ups", "sit_ups"]:  # 越大越好
+                max_val = standards[0][0]
+                min_val = standards[-1][0]
+                label_text += f" | 范围: {min_val:.0f}~{max_val:.0f}"
+        
+        self.category1_label.config(text=label_text)
     
     def update_category2_label(self, project_key: str):
         """更新第二类选考标签"""
+        # 获取该项目的评分标准范围
+        scoring_data = get_scoring_data(self.user.gender)
+        standards = scoring_data.get(project_key, [])
+        
         labels = {
             "basketball": "篮球运球 (秒)",
             "football": "足球运球 (秒)",
             "volleyball": "排球垫球 (次)"
         }
-        self.category2_label.config(text=labels.get(project_key, ""))
+        
+        label_text = labels.get(project_key, "")
+        
+        # 添加范围提示
+        if standards:
+            if project_key in ["basketball", "football"]:  # 越小越好
+                min_val = standards[0][0]
+                max_val = standards[-1][0]
+                label_text += f" | 范围: {min_val:.1f}~{max_val:.1f}"
+            else:  # volleyball - 越大越好
+                max_val = standards[0][0]
+                min_val = standards[-1][0]
+                label_text += f" | 范围: {min_val}~{max_val}"
+        
+        self.category2_label.config(text=label_text)
     
     def calculate_required_score(self):
         """计算必选项得分"""
         try:
-            time_str = self.required_var.get().strip()
-            if not time_str:
+            minutes = self.required_minutes_var.get()
+            seconds = self.required_seconds_var.get()
+            
+            if minutes == 0 and seconds == 0:
                 self.required_score_var.set("得分: --")
                 return
             
-            # 解析时间
-            from config.scoring_standards import parse_time_to_seconds
-            performance = parse_time_to_seconds(time_str)
+            # 转换为总秒数
+            performance = minutes * 60 + seconds
+            
+            # 获取评分标准范围
+            scoring_data = get_scoring_data(self.user.gender)
+            standards = scoring_data[self.required_project]
+            min_time = standards[0][0]  # 最好成绩
+            max_time = standards[-1][0]  # 最差成绩
+            
+            # 限制在合理范围内
+            if performance < min_time:
+                performance = min_time
+            elif performance > max_time:
+                performance = max_time
             
             # 计算得分
-            project = "1000m" if self.user.gender == GENDER_MALE else "800m"
-            score = self.score_calculator.calculate_score(self.user.gender, project, performance)
+            score = self.score_calculator.calculate_score(self.user.gender, self.required_project, performance)
             
             self.required_score_var.set(f"得分: {score:.1f}")
             
         except Exception as e:
             self.required_score_var.set("得分: 输入错误")
+    
+    def _clamp_performance(self, project_key: str, performance: float) -> float:
+        """将成绩值限制在评分标准范围内"""
+        try:
+            scoring_data = get_scoring_data(self.user.gender)
+            if project_key not in scoring_data:
+                return performance
+            
+            standards = scoring_data[project_key]
+            
+            # 对于"越小越好"的项目（跑步、运球类）
+            if project_key in ["1000m", "800m", "50m", "basketball", "football"]:
+                min_val = standards[0][0]  # 最好成绩（最小值）
+                max_val = standards[-1][0]  # 最差成绩（最大值）
+                return max(min_val, min(performance, max_val))
+            # 对于"越大越好"的项目（跳远、仰卧起坐、引体向上、排球等）
+            else:
+                max_val = standards[0][0]  # 最好成绩（最大值）
+                min_val = standards[-1][0]  # 最差成绩（最小值）
+                return max(min_val, min(performance, max_val))
+        except:
+            return performance
     
     def calculate_category1_score(self):
         """计算第一类选考得分"""
@@ -325,12 +450,14 @@ class InputWindow:
             
             # 根据项目类型验证和转换输入
             if project_key == "50m":
-                from config.scoring_standards import parse_time_to_seconds
-                performance = parse_time_to_seconds(value_str)
+                performance = float(value_str)
             elif project_key in ["sit_reach", "standing_jump"]:
                 performance = float(value_str)
             else:  # pull_ups, sit_ups
                 performance = int(value_str)
+            
+            # 限制在评分标准范围内
+            performance = self._clamp_performance(project_key, performance)
             
             # 计算得分
             score = self.score_calculator.calculate_score(self.user.gender, project_key, performance)
@@ -357,6 +484,9 @@ class InputWindow:
                 performance = float(value_str)
             else:  # volleyball
                 performance = int(value_str)
+            
+            # 限制在评分标准范围内
+            performance = self._clamp_performance(project_key, performance)
             
             # 计算得分
             score = self.score_calculator.calculate_score(self.user.gender, project_key, performance)
@@ -396,16 +526,15 @@ class InputWindow:
     def validate_input(self) -> bool:
         """验证输入数据"""
         # 验证必选项
-        time_str = self.required_var.get().strip()
-        if not time_str:
+        minutes = self.required_minutes_var.get()
+        seconds = self.required_seconds_var.get()
+        
+        if minutes == 0 and seconds == 0:
             messagebox.showerror("输入错误", "请输入必选项成绩")
             return False
         
-        try:
-            from config.scoring_standards import parse_time_to_seconds
-            parse_time_to_seconds(time_str)
-        except:
-            messagebox.showerror("输入错误", "必选项时间格式不正确")
+        if seconds >= 60:
+            messagebox.showerror("输入错误", "秒钟数必须小于60")
             return False
         
         # 验证第一类选考
@@ -435,8 +564,8 @@ class InputWindow:
         
         try:
             # 准备数据
-            required_project = "1000m" if self.user.gender == GENDER_MALE else "800m"
-            required_value = parse_time_to_seconds(self.required_var.get().strip())
+            required_project = self.required_project
+            required_value = self.required_minutes_var.get() * 60 + self.required_seconds_var.get()
             
             category1_project = self.category1_options_map[self.category1_var.get()]
             category1_value = self.parse_category1_value(category1_project, self.category1_var_value.get().strip())
@@ -478,23 +607,29 @@ class InputWindow:
     def parse_category1_value(self, project: str, value_str: str):
         """解析第一类选考值"""
         if project == "50m":
-            from config.scoring_standards import parse_time_to_seconds
-            return parse_time_to_seconds(value_str)
+            performance = float(value_str)
         elif project in ["sit_reach", "standing_jump"]:
-            return float(value_str)
+            performance = float(value_str)
         else:  # pull_ups, sit_ups
-            return int(value_str)
+            performance = int(value_str)
+        
+        # 限制在评分标准范围内
+        return self._clamp_performance(project, performance)
     
     def parse_category2_value(self, project: str, value_str: str):
         """解析第二类选考值"""
         if project in ["basketball", "football"]:
-            return float(value_str)
+            performance = float(value_str)
         else:  # volleyball
-            return int(value_str)
+            performance = int(value_str)
+        
+        # 限制在评分标准范围内
+        return self._clamp_performance(project, performance)
     
     def handle_reset(self):
         """处理重置"""
-        self.required_var.set("")
+        self.required_minutes_var.set(0)
+        self.required_seconds_var.set(0)
         self.category1_var.set("")
         self.category1_var_value.set("")
         self.category2_var.set("")
