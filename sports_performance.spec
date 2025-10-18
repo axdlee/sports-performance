@@ -106,7 +106,7 @@ if is_macos:
             'CFBundleIdentifier': "com.sports.performance.assessment",
             'CFBundleVersion': "1.0.0",
             'CFBundleShortVersionString': "1.0.0",
-            'NSHumanReadableCopyright': "Copyright © 2024",
+            'NSHumanReadableCopyright': "Copyright © 2025",
             'NSHighResolutionCapable': 'True',
             'LSMinimumSystemVersion': '10.13.0',
         },

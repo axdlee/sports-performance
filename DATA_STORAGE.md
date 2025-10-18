@@ -108,7 +108,7 @@ explorer %APPDATA%\SportsPerformance
       "gender": "male/female",
       "records": [
         {
-          "date": "2024-10-18",
+          "date": "2025-10-18",
           "required_project": "1000m",
           "required_score": 9.5,
           "category1_project": "50m",

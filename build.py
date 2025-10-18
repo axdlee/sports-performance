@@ -282,10 +282,32 @@ def create_windows_installer():
 3. 系统会自动计算得分并生成分析报告
 4. 支持查看历史数据和趋势分析
 
+## 数据存储
+
+应用数据存储在系统标准位置：
+  %APPDATA%\\SportsPerformance\\
+  
+通常为：C:\\Users\\[用户名]\\AppData\\Roaming\\SportsPerformance\\
+
+这确保：
+- 数据在应用更新后保留
+- 程序目录保持只读状态
+- 符合 Windows 标准实践
+
+查看数据目录：
+1. 打开文件资源管理器
+2. 在地址栏输入：%APPDATA%\\SportsPerformance
+3. 按回车
+
+## 数据备份
+
+建议定期备份数据文件：
+1. 找到数据目录（见上方说明）
+2. 复制整个 SportsPerformance 文件夹
+3. 保存到安全位置
+
 ## 注意事项
 
-- 应用数据保存在程序目录下的 data 文件夹
-- 建议定期备份 data 文件夹
 - 首次运行可能被 Windows Defender 拦截：
   * 点击"更多信息"
   * 选择"仍要运行"
@@ -293,7 +315,8 @@ def create_windows_installer():
 
 ## 卸载说明
 
-直接删除整个程序文件夹即可（卸载前请备份 data 文件夹）
+1. 删除程序：删除整个程序文件夹
+2. 删除数据（可选）：删除 %APPDATA%\\SportsPerformance 文件夹
 
 ## 技术支持
 
@@ -303,7 +326,7 @@ def create_windows_installer():
 3. 数据文件完整性
 4. 是否有足够的磁盘空间
 
-版本: 1.0.0
+版本: 1.3.1
 """
         
         readme_file = installer_dir / "README.txt"
