@@ -288,83 +288,77 @@ WINDOW_SIZES = {
     "report": "1100x800"       # 成绩报告窗口
 }
 
-# InputWindow 配置
-INPUT_WINDOW_CONFIG = {
-    "bg_color": "#ecf0f1",
-    "title_bg": "#16a085",
-    "title_fg": "white",
+# ========== 公共UI配置（所有窗口共享） ==========
+COMMON_UI_CONFIG = {
+    # 基础颜色
+    "bg_color": "#ecf0f1",              # 窗口背景色
+    "title_bg": "#16a085",              # 标题背景色
+    "title_fg": "white",                # 标题前景色
+    "frame_bg": "#ffffff",              # 框架背景色
+    "frame_fg": "#2c3e50",              # 框架前景色
+    
+    # 标准字体
     "title_font": ("Microsoft YaHei", 22, "bold"),
     "subtitle_font": ("Arial", 9),
-    "frame_bg": "#ffffff",
-    "frame_fg": "#2c3e50",
+    "section_font": ("Microsoft YaHei", 12, "bold"),
     "label_font_bold": ("Microsoft YaHei", 11, "bold"),
     "label_font_normal": ("Microsoft YaHei", 11),
     "label_font_small": ("Microsoft YaHei", 10),
     "label_font_tiny": ("Microsoft YaHei", 9),
-    "entry_font": ("Arial", 12),
-    "score_font": ("Microsoft YaHei", 18, "bold"),
-    "section_font": ("Microsoft YaHei", 12, "bold"),
-    "required_color": "#c0392b",      # 必选项颜色
-    "category1_color": "#2980b9",     # 第一类选考颜色
-    "category2_color": "#e67e22",     # 第二类选考颜色
-    "label_primary_color": "#16a085", # 主标签颜色
-    "label_secondary_color": "#34495e", # 次要标签颜色
-    "label_hint_color": "#95a5a6",    # 提示文字颜色
-    "score_display_color": "#3498db", # 得分显示颜色
-    "score_total_color": "#e74c3c",   # 总分显示颜色
-    "save_button_bg": "#2ecc71",      # 保存按钮背景色
-    "reset_button_bg": "#95a5a6"      # 重置按钮背景色
-}
-
-# LoginWindow 配置
-LOGIN_WINDOW_CONFIG = {
-    "bg_color": "#ecf0f1",
-    "title_bg": "#16a085",
-    "title_fg": "white",
-    "title_font": ("Microsoft YaHei", 22, "bold"),
-    "subtitle_font": ("Arial", 9),
-    "frame_bg": "#ffffff",
-    "frame_fg": "#2c3e50",
-    "label_font_bold": ("Microsoft YaHei", 11, "bold"),
-    "label_font_normal": ("Microsoft YaHei", 11),
-    "label_font_small": ("Microsoft YaHei", 10),
     "entry_font": ("Microsoft YaHei", 11),
-    "section_font": ("Microsoft YaHei", 12, "bold"),
-    "label_primary_color": "#16a085",
-    "label_secondary_color": "#34495e",
-    "label_hint_color": "#7f8c8d",
-    "male_color": "#3498db",          # 男生颜色
-    "female_color": "#e74c3c",        # 女生颜色
-    "card_bg": "#f8f9fa",             # 用户卡片背景色
-    "card_hover_bg": "#e8f4f8",       # 用户卡片悬停色
-    "card_text_color": "#2c3e50",     # 卡片文字颜色
-    "card_hint_color": "#7f8c8d",     # 卡片提示颜色
-    "login_button_bg": "#3498db",     # 登录按钮颜色
-    "register_button_bg": "#2ecc71"   # 注册按钮颜色
+    "button_font": ("Microsoft YaHei", 12, "bold"),
+    "status_font": ("Microsoft YaHei", 10),
+    
+    # 标准颜色
+    "label_primary_color": "#16a085",   # 主标签颜色
+    "label_secondary_color": "#34495e", # 次要标签颜色
+    "label_hint_color": "#7f8c8d",      # 提示文字颜色
+    "card_bg": "#f8f9fa",               # 卡片背景色
+    "card_hover_bg": "#e8f4f8",         # 卡片悬停色
+    "card_text_color": "#2c3e50",       # 卡片文字颜色
+    
+    # 按钮颜色
+    "login_button_bg": "#3498db",
+    "register_button_bg": "#2ecc71",
+    "save_button_bg": "#2ecc71",
+    "reset_button_bg": "#95a5a6",
+    "exit_button_bg": "#95a5a6",
+    "disabled_button_bg": "#bdc3c7"
 }
 
-# MainWindow 配置
+# ========== 窗口专属配置（仅包含差异化配置） ==========
+
+# InputWindow 专属配置
+INPUT_WINDOW_CONFIG = {
+    **COMMON_UI_CONFIG,  # 继承公共配置
+    # 覆盖/新增专属配置
+    "entry_font": ("Arial", 12),        # 数字输入框使用Arial字体
+    "score_font": ("Microsoft YaHei", 18, "bold"),
+    "required_color": "#c0392b",        # 必选项颜色
+    "category1_color": "#2980b9",       # 第一类选考颜色
+    "category2_color": "#e67e22",       # 第二类选考颜色
+    "label_hint_color": "#95a5a6",      # 输入窗口的提示色稍浅
+    "score_display_color": "#3498db",   # 得分显示颜色
+    "score_total_color": "#e74c3c",     # 总分显示颜色
+}
+
+# LoginWindow 专属配置
+LOGIN_WINDOW_CONFIG = {
+    **COMMON_UI_CONFIG,  # 继承公共配置
+    # 覆盖/新增专属配置
+    "male_color": "#3498db",            # 男生颜色
+    "female_color": "#e74c3c",          # 女生颜色
+}
+
+# MainWindow 专属配置
 MAIN_WINDOW_CONFIG = {
-    "bg_color": "#ecf0f1",
-    "title_bg": "#16a085",
-    "title_fg": "white",
-    "title_font": ("Microsoft YaHei", 22, "bold"),
-    "subtitle_font": ("Arial", 9),
-    "frame_bg": "#ffffff",
-    "frame_fg": "#2c3e50",
-    "label_font_bold": ("Microsoft YaHei", 11, "bold"),
-    "label_font_normal": ("Microsoft YaHei", 12),
-    "label_font_small": ("Microsoft YaHei", 10),
-    "status_font": ("Microsoft YaHei", 10),
-    "button_font": ("Microsoft YaHei", 12, "bold"),
+    **COMMON_UI_CONFIG,  # 继承公共配置
+    # 覆盖/新增专属配置
+    "label_font_normal": ("Microsoft YaHei", 12),  # 主窗口标签字体稍大
     "user_info_text_color": "#34495e",
-    "status_text_color": "#7f8c8d",
-    "login_button_bg": "#3498db",
     "switch_user_button_bg": "#9b59b6",  # 切换用户按钮颜色
     "input_button_bg": "#2ecc71",
     "report_button_bg": "#e67e22",
-    "exit_button_bg": "#95a5a6",
-    "disabled_button_bg": "#bdc3c7"
 }
 
 # 通用UI文本
