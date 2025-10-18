@@ -243,18 +243,23 @@ def create_windows_installer():
         
         if not exe_path.exists():
             print("✗ .exe 文件未找到")
+            print(f"  查找路径: {exe_path.absolute()}")
+            print(f"  dist 目录内容: {list(Path('dist').iterdir()) if Path('dist').exists() else '不存在'}")
             return False
         
         print(f"✓ 找到应用程序: {exe_path}")
         
         # 创建安装包目录
         installer_dir = Path("dist/installer_windows")
-        installer_dir.mkdir(exist_ok=True)
+        installer_dir.mkdir(parents=True, exist_ok=True)
         
         # 复制整个应用目录到安装包
         app_dest = installer_dir / "体育成绩评估系统"
         if app_dest.exists():
+            print(f"清理旧的安装包目录...")
             shutil.rmtree(app_dest)
+        
+        print(f"复制应用程序到安装包目录...")
         shutil.copytree(app_dir, app_dest)
         
         # 创建安装说明
@@ -330,6 +335,7 @@ def create_windows_installer():
 """
         
         readme_file = installer_dir / "README.txt"
+        print(f"创建安装说明文档...")
         readme_file.write_text(readme_content, encoding="utf-8")
         
         # 创建快速启动批处理文件
@@ -339,7 +345,13 @@ cd /d "%~dp0体育成绩评估系统"
 start "" "体育成绩评估系统.exe"
 """
         batch_file = installer_dir / "启动程序.bat"
-        batch_file.write_text(batch_content, encoding="utf-8")
+        print(f"创建启动脚本...")
+        # Windows 批处理文件使用 GBK 编码
+        try:
+            batch_file.write_text(batch_content, encoding="utf-8")
+        except Exception as e:
+            print(f"  使用 UTF-8 编码失败，尝试 GBK: {e}")
+            batch_file.write_text(batch_content, encoding="gbk")
         
         print(f"✓ Windows 安装包创建成功: {installer_dir}")
         print(f"  - 应用程序: {app_dest}")
@@ -352,7 +364,10 @@ start "" "体育成绩评估系统.exe"
         return True
         
     except Exception as e:
+        import traceback
         print(f"✗ Windows 安装包创建失败: {e}")
+        print(f"详细错误信息:")
+        traceback.print_exc()
         return False
 
 
