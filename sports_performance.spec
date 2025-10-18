@@ -74,13 +74,14 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=False,  # 禁用 UPX 压缩，避免 DLL 加载问题
+    upx=False,  # 禁用 UPX 压缩，避免 DLL 加载问题和杀毒软件误报
     console=False,  # 无控制台窗口
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
     icon='assets/icon.icns' if is_macos else 'assets/icon.ico',  # 平台特定图标
+    version_file=None,  # 可以添加版本信息文件来降低误报率
 )
 
 # COLLECT 阶段

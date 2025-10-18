@@ -180,12 +180,23 @@ on:
 | Windows 虚拟机 | 完全本地控制 | 需购买 Parallels/VMware | ⭐⭐⭐ |
 | 远程 Windows 机器 | 真实环境 | 需要额外硬件/云服务器 | ⭐⭐⭐ |
 
+## 🛡️ 杀毒软件误报问题
+
+PyInstaller 打包的程序经常被 Windows Defender 误报为病毒，这是正常现象。
+
+**解决方法：**
+1. 点击"更多信息" → "仍要运行"
+2. 或将程序添加到 Windows Defender 排除列表
+
+详细说明请查看：[ANTIVIRUS_NOTICE.md](ANTIVIRUS_NOTICE.md)
+
 ## 📞 技术支持
 
 如有问题：
 1. 查看 Actions 构建日志
 2. 检查 `.github/workflows/*.yml` 配置
 3. 参考 [GitHub Actions 文档](https://docs.github.com/cn/actions)
+4. 杀毒软件误报请查看 [ANTIVIRUS_NOTICE.md](ANTIVIRUS_NOTICE.md)
 
 ---
 
