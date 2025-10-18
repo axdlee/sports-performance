@@ -5,7 +5,7 @@
 
 from typing import Dict, Tuple, Optional
 from config.scoring_standards import get_scoring_data, parse_time_to_seconds
-from config.constants import GRADE_STANDARDS
+from config.constants import GRADE_STANDARDS, PROJECT_IMPROVEMENT_SUGGESTIONS
 
 
 class ScoreCalculator:
@@ -162,46 +162,10 @@ class ScoreCalculator:
         Returns:
             改进建议文本
         """
-        suggestions = {
-            "required": {
-                "male": "建议加强长跑训练，每周进行3-4次有氧运动，包括慢跑、间歇跑等，逐步提高心肺功能和耐力。",
-                "female": "建议加强长跑训练，每周进行3-4次有氧运动，包括慢跑、间歇跑等，逐步提高心肺功能和耐力。"
-            },
-            "50m": {
-                "male": "建议加强短跑训练，重点练习起跑、加速跑和冲刺技术，同时进行腿部力量训练。",
-                "female": "建议加强短跑训练，重点练习起跑、加速跑和冲刺技术，同时进行腿部力量训练。"
-            },
-            "sit_reach": {
-                "male": "建议加强柔韧性训练，每天进行拉伸练习，重点练习腰部、背部和腿部柔韧性。",
-                "female": "建议加强柔韧性训练，每天进行拉伸练习，重点练习腰部、背部和腿部柔韧性。"
-            },
-            "standing_jump": {
-                "male": "建议加强下肢爆发力训练，包括深蹲、蛙跳、立定跳远等练习，提高腿部肌肉力量。",
-                "female": "建议加强下肢爆发力训练，包括深蹲、蛙跳、立定跳远等练习，提高腿部肌肉力量。"
-            },
-            "pull_ups": {
-                "male": "建议加强上肢力量训练，包括引体向上、俯卧撑、哑铃练习等，提高背部、手臂和肩部力量。",
-                "female": "建议加强上肢力量训练，包括引体向上、俯卧撑、哑铃练习等，提高背部、手臂和肩部力量。"
-            },
-            "sit_ups": {
-                "male": "建议加强核心力量训练，包括仰卧起坐、平板支撑、卷腹等练习，提高腹部肌肉力量。",
-                "female": "建议加强核心力量训练，包括仰卧起坐、平板支撑、卷腹等练习，提高腹部肌肉力量。"
-            },
-            "basketball": {
-                "male": "建议加强篮球运球技术练习，包括原地运球、行进间运球、变向运球等，提高球感和协调性。",
-                "female": "建议加强篮球运球技术练习，包括原地运球、行进间运球、变向运球等，提高球感和协调性。"
-            },
-            "football": {
-                "male": "建议加强足球运球技术练习，包括脚内侧运球、脚外侧运球、变向运球等，提高球感和协调性。",
-                "female": "建议加强足球运球技术练习，包括脚内侧运球、脚外侧运球、变向运球等，提高球感和协调性。"
-            },
-            "volleyball": {
-                "male": "建议加强排球垫球技术练习，包括原地垫球、移动垫球、对墙垫球等，提高球感和协调性。",
-                "female": "建议加强排球垫球技术练习，包括原地垫球、移动垫球、对墙垫球等，提高球感和协调性。"
-            }
-        }
-        
-        if weakest_item in suggestions and gender in suggestions[weakest_item]:
-            return suggestions[weakest_item][gender]
+        # 从constants导入统一的改进建议
+        if weakest_item in PROJECT_IMPROVEMENT_SUGGESTIONS:
+            suggestions_dict = PROJECT_IMPROVEMENT_SUGGESTIONS[weakest_item]
+            if gender in suggestions_dict:
+                return suggestions_dict[gender]
         
         return "建议加强该项训练，提高技术水平。"

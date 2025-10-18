@@ -9,7 +9,13 @@ from typing import Optional, Dict, List
 from models.user import User
 from services.score_calculator import ScoreCalculator
 from utils.chart_generator import ChartGenerator
-from config.constants import PROJECT_NAMES
+from config.constants import (
+    PROJECT_NAMES, THEME_COLORS, FONTS, CHART_CONFIG,
+    SCORE_EVALUATION_TEXTS, WEAKNESS_INTENSITY_TEXTS,
+    PROJECT_IMPROVEMENT_SUGGESTIONS, DETAILED_TRAINING_PLANS,
+    LIFE_SUGGESTIONS_TEXT, SCORE_PRIORITY, SCORE_STATUS,
+    REPORT_WINDOW_SIZE
+)
 from ui.custom_button import CustomButton
 from datetime import datetime
 import statistics
@@ -24,16 +30,16 @@ import matplotlib.font_manager as fm
 class ReportWindow:
     """成绩报告窗口类 - 优化版"""
     
-    # 颜色主题
-    THEME_PRIMARY = "#16a085"  # 青绿色主题
-    THEME_BG = "#ecf0f1"
-    THEME_CARD = "#ffffff"
-    THEME_SUCCESS = "#2ecc71"
-    THEME_WARNING = "#f39c12"
-    THEME_DANGER = "#e74c3c"
-    THEME_INFO = "#3498db"
-    THEME_TEXT_DARK = "#2c3e50"
-    THEME_TEXT_LIGHT = "#7f8c8d"
+    # 从constants导入颜色主题
+    THEME_PRIMARY = THEME_COLORS["primary"]
+    THEME_BG = THEME_COLORS["bg"]
+    THEME_CARD = THEME_COLORS["card"]
+    THEME_SUCCESS = THEME_COLORS["success"]
+    THEME_WARNING = THEME_COLORS["warning"]
+    THEME_DANGER = THEME_COLORS["danger"]
+    THEME_INFO = THEME_COLORS["info"]
+    THEME_TEXT_DARK = THEME_COLORS["text_dark"]
+    THEME_TEXT_LIGHT = THEME_COLORS["text_light"]
     
     def __init__(self, user: User, parent=None):
         self.user = user
@@ -52,7 +58,7 @@ class ReportWindow:
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
         self.window.title(f"📊 成绩报告 - {self.user.name}")
-        self.window.geometry("1100x800")
+        self.window.geometry(REPORT_WINDOW_SIZE)
         self.window.resizable(True, True)
         self.window.configure(bg=self.THEME_BG)
         
@@ -69,20 +75,20 @@ class ReportWindow:
         
         # 标题
         title_label = tk.Label(title_frame, text=f"📊 成绩报告 - {self.user.name}", 
-                               font=("Microsoft YaHei", 20, "bold"),
+                               font=FONTS["title"],
                                bg=self.THEME_PRIMARY, fg="white")
         title_label.pack()
         
         gender_text = "男生" if self.user.gender == "male" else "女生"
         subtitle_label = tk.Label(title_frame, text=f"{gender_text} | Performance Report",
-                                 font=("Arial", 10),
+                                 font=FONTS["subtitle"],
                                  bg=self.THEME_PRIMARY, fg="#ecf0f1")
         subtitle_label.pack(pady=(5, 0))
         
         # 创建笔记本控件（标签页）
         style = ttk.Style()
         style.configure('Report.TNotebook', background=self.THEME_BG)
-        style.configure('Report.TNotebook.Tab', padding=[20, 10], font=("Microsoft YaHei", 11, "bold"))
+        style.configure('Report.TNotebook.Tab', padding=[20, 10], font=FONTS["section_title"])
         
         notebook = ttk.Notebook(main_frame, style='Report.TNotebook')
         notebook.pack(fill=tk.BOTH, expand=True)
@@ -121,7 +127,7 @@ class ReportWindow:
         title_frame.pack_propagate(False)
         
         title_label = tk.Label(title_frame, text=title, 
-                              font=("Microsoft YaHei", 12, "bold"),
+                              font=FONTS["card_title"],
                               bg=title_color, fg="white", anchor="w", padx=15)
         title_label.pack(fill=tk.BOTH, expand=True)
         
@@ -492,7 +498,7 @@ class ReportWindow:
             scrollable_frame, "🌟 生活与训练建议", self.THEME_SUCCESS)
         life_card.pack(fill=tk.X, pady=(0, 15))
         
-        self.life_text = tk.Text(life_content, wrap=tk.WORD, height=12, 
+        self.life_text = tk.Text(life_content, wrap=tk.WORD, height=28, 
                                 font=("Microsoft YaHei", 10), bg=self.THEME_CARD, 
                                 fg=self.THEME_TEXT_DARK, relief=tk.FLAT, state=tk.DISABLED)
         self.life_text.pack(fill=tk.BOTH, expand=True)
@@ -913,45 +919,40 @@ class ReportWindow:
     
     def get_overall_evaluation(self, total_score: float) -> str:
         """获取总体评价"""
-        if total_score >= 27:
-            return ("🎉 恭喜！您的体育成绩非常优秀！您已经达到了很高的运动水平，各项指标都很出色。"
-                   "建议继续保持当前的训练强度，并可以尝试挑战更高的目标。保持良好的运动习惯，"
-                   "注意预防运动损伤，您可以成为同学们的榜样！")
-        elif total_score >= 24:
-            return ("👍 您的体育成绩良好！整体表现不错，但还有进步的空间。通过针对性训练，"
-                   "您完全有能力达到优秀水平。建议重点提升得分较低的项目，同时保持强项的训练。"
-                   "坚持科学训练，相信您很快就能突破到更高层次！")
-        elif total_score >= 18:
-            return ("📈 您的体育成绩处于中等水平。这说明您具备基本的运动能力，但需要加强系统训练。"
-                   "建议制定详细的训练计划，每周至少进行3-4次针对性练习。提高成绩的关键在于持之以恒，"
-                   "注意训练的科学性和规律性。加油，您一定能够取得明显进步！")
-        elif total_score >= 15:
-            return ("⚠️ 您的体育成绩刚达到及格线，需要重点加强训练。建议从最弱的项目入手，"
-                   "制定循序渐进的训练计划。不要急于求成，先打好基础，逐步提高。可以寻求体育老师或教练的指导，"
-                   "采用更科学的训练方法。相信通过努力，您的成绩会有显著提升！")
+        # 从constants导入评价文本
+        if total_score >= SCORE_EVALUATION_TEXTS["excellent"]["threshold"]:
+            return SCORE_EVALUATION_TEXTS["excellent"]["text"]
+        elif total_score >= SCORE_EVALUATION_TEXTS["good"]["threshold"]:
+            return SCORE_EVALUATION_TEXTS["good"]["text"]
+        elif total_score >= SCORE_EVALUATION_TEXTS["medium"]["threshold"]:
+            return SCORE_EVALUATION_TEXTS["medium"]["text"]
+        elif total_score >= SCORE_EVALUATION_TEXTS["pass"]["threshold"]:
+            return SCORE_EVALUATION_TEXTS["pass"]["text"]
         else:
-            return ("🚨 您的体育成绩目前不及格，需要系统性的改进和提升。建议立即开始规律的体育锻炼，"
-                   "从基础训练做起。可以先设定小目标，比如每周进步一点点。强烈建议咨询专业教练，"
-                   "制定个性化的训练方案。记住，万事开头难，只要开始行动并坚持下去，一定会看到成效！")
+            return SCORE_EVALUATION_TEXTS["fail"]["text"]
     
     def get_weakness_suggestions(self, weakest_item: str, score: float) -> str:
         """获取弱项针对性建议"""
         item_name = self.get_item_display_name(weakest_item)
-        base_suggestion = self.score_calculator.get_improvement_suggestions(weakest_item, self.user.gender)
         
-        # 根据得分程度给出更详细的建议
-        if score < 3:
-            intensity = "您在该项目上的得分很低，需要从基础开始系统训练。\n\n"
-            frequency = "建议每周训练4-5次，每次30-40分钟。"
-        elif score < 5:
-            intensity = "您在该项目上还有较大提升空间，需要加强专项训练。\n\n"
-            frequency = "建议每周训练3-4次，每次25-35分钟。"
-        elif score < 7:
-            intensity = "您在该项目上已有一定基础，需要针对性提高。\n\n"
-            frequency = "建议每周训练2-3次，每次20-30分钟。"
+        # 从constants获取改进建议
+        if weakest_item in PROJECT_IMPROVEMENT_SUGGESTIONS:
+            base_suggestion = PROJECT_IMPROVEMENT_SUGGESTIONS[weakest_item].get(self.user.gender, "")
         else:
-            intensity = "您在该项目上表现尚可，可以进一步优化。\n\n"
-            frequency = "建议每周训练2次，每次15-25分钟。"
+            base_suggestion = "建议加强该项训练，提高技术水平。"
+        
+        # 根据得分程度给出更详细的建议 - 从constants获取
+        if score < 3:
+            intensity_data = WEAKNESS_INTENSITY_TEXTS["very_low"]
+        elif score < 5:
+            intensity_data = WEAKNESS_INTENSITY_TEXTS["low"]
+        elif score < 7:
+            intensity_data = WEAKNESS_INTENSITY_TEXTS["medium"]
+        else:
+            intensity_data = WEAKNESS_INTENSITY_TEXTS["high"]
+        
+        intensity = intensity_data["text"] + "\n\n"
+        frequency = intensity_data["frequency"]
         
         detailed_training = self.get_detailed_training_plan(weakest_item)
         
@@ -959,24 +960,12 @@ class ReportWindow:
     
     def get_detailed_training_plan(self, project_key: str) -> str:
         """获取详细训练计划"""
-        plans = {
-            "1000m": "训练计划:\n• 第1-2周: 慢跑800米 x 3组,间歇3分钟\n• 第3-4周: 慢跑1000米 x 2组,间歇5分钟\n• 第5-6周: 节奏跑1000米 x 2组,提升配速\n• 第7-8周: 全力跑1000米,争取突破",
-            "800m": "训练计划:\n• 第1-2周: 慢跑600米 x 3组,间歇3分钟\n• 第3-4周: 慢跑800米 x 2组,间歇4分钟\n• 第5-6周: 节奏跑800米 x 2组,提升配速\n• 第7-8周: 全力跑800米,争取突破",
-            "50m": "训练计划:\n• 起跑练习: 蹲踞式起跑30次/天\n• 加速跑: 30米冲刺 x 10组\n• 高抬腿: 30米 x 5组\n• 后蹬跑: 30米 x 5组\n• 腿部力量: 深蹲、跳跃训练",
-            "sit_reach": "训练计划:\n• 坐位体前屈静态拉伸: 3组 x 30秒\n• 站立体前屈: 3组 x 15次\n• 腿部后侧拉伸: 每腿3组 x 20秒\n• 腰部拉伸: 瑜伽猫式等动作\n• 每天拉伸,循序渐进增加幅度",
-            "standing_jump": "训练计划:\n• 深蹲跳: 4组 x 15次\n• 蛙跳: 20米 x 4组\n• 单腿跳: 每腿3组 x 10次\n• 台阶跳: 4组 x 20次\n• 摆臂练习配合腿部发力",
-            "pull_ups": "训练计划:\n• 辅助引体(弹力带): 3组 x 8次\n• 反向划船: 4组 x 12次\n• 悬吊静止: 3组 x 最大时间\n• 背阔肌下拉: 4组 x 10次\n• 逐步减少辅助,增加次数",
-            "sit_ups": "训练计划:\n• 标准仰卧起坐: 4组 x 80%最大次数\n• 卷腹: 4组 x 20次\n• 平板支撑: 3组 x 60秒\n• 俄罗斯转体: 4组 x 30次\n• 每周增加5-10次目标",
-            "basketball": "训练计划:\n• 原地运球: 左右手各5分钟\n• 行进间运球: 往返10次\n• 变向运球: Z字形 x 10次\n• 双球运球: 5分钟提高协调\n• 障碍物运球: 提高控球能力",
-            "football": "训练计划:\n• 脚内侧运球: 往返10次\n• 脚外侧运球: 往返10次\n• 变向运球: 8字形 x 10次\n• 障碍物绕桩: 连续练习\n• 提高触球频率和灵活性",
-            "volleyball": "训练计划:\n• 对墙垫球: 连续100次 x 3组\n• 自垫球: 连续50次 x 3组\n• 移动垫球: 前后左右各方向\n• 双人对垫: 提高稳定性\n• 注意手型和击球部位"
-        }
-        
+        # 从constants导入训练计划
         # 如果是类别项,返回通用建议
         if project_key in ["required", "category1", "category2"]:
             return "请参考各单项的详细训练计划。"
         
-        return plans.get(project_key, "请咨询专业教练制定个性化训练计划。")
+        return DETAILED_TRAINING_PLANS.get(project_key, "请咨询专业教练制定个性化训练计划。")
     
     def display_training_plan(self, scores: Dict[str, float]):
         """显示分项训练计划"""
@@ -991,16 +980,16 @@ class ReportWindow:
         for item_key, score in items:
             item_name = self.get_item_display_name(item_key)
             
-            # 确定优先级
-            if score < 5:
-                priority = "🔴 高优先级"
-                bg_color = "#fadbd8"
-            elif score < 7:
-                priority = "🟡 中优先级"
-                bg_color = "#fff3cd"
+            # 确定优先级 - 从constants获取
+            if score < SCORE_PRIORITY["high"]["threshold"]:
+                priority = SCORE_PRIORITY["high"]["label"]
+                bg_color = SCORE_PRIORITY["high"]["bg_color"]
+            elif score < SCORE_PRIORITY["medium"]["threshold"]:
+                priority = SCORE_PRIORITY["medium"]["label"]
+                bg_color = SCORE_PRIORITY["medium"]["bg_color"]
             else:
-                priority = "🟢 低优先级"
-                bg_color = "#d5f4e6"
+                priority = SCORE_PRIORITY["low"]["label"]
+                bg_color = SCORE_PRIORITY["low"]["bg_color"]
             
             # 项目框架
             project_frame = tk.Frame(self.training_frame, bg=bg_color, 
@@ -1027,42 +1016,8 @@ class ReportWindow:
     
     def get_life_suggestions(self, total_score: float) -> str:
         """获取生活建议"""
-        suggestions = """💪 训练建议:
-• 制定合理的训练计划,循序渐进,避免过度训练
-• 训练前充分热身(10-15分钟),激活肌肉,预防损伤
-• 训练后做好拉伸放松(10-15分钟),促进恢复
-• 记录训练日志,跟踪进步情况,及时调整方案
-• 每周至少休息1-2天,让身体充分恢复
-
-🍎 饮食建议:
-• 保证充足的蛋白质摄入(鸡蛋、牛奶、瘦肉、豆类)
-• 多吃新鲜蔬菜水果,补充维生素和矿物质
-• 训练前1-2小时进食,避免空腹或过饱运动
-• 训练后及时补充水分和能量(香蕉、运动饮料)
-• 减少油炸食品和高糖食物,控制体重
-
-😴 作息建议:
-• 保证每天7-9小时的充足睡眠
-• 尽量在晚上11点前入睡,确保深度睡眠
-• 午休20-30分钟可以提高下午训练效果
-• 避免熬夜和长时间使用电子设备
-• 规律作息有助于提高运动表现
-
-🎯 心理建议:
-• 设定合理的短期和长期目标,保持动力
-• 不要和别人比较,专注于自己的进步
-• 遇到困难时保持积极心态,寻求帮助
-• 庆祝每一个小进步,建立自信心
-• 把运动当作生活习惯而非任务
-
-⚠️ 安全提示:
-• 身体不适时及时停止训练,不要勉强
-• 使用正确的动作技术,避免受伤
-• 注意训练场地安全,穿着合适的运动装备
-• 如有慢性疾病,训练前咨询医生
-• 运动损伤后要充分休息和治疗"""
-        
-        return suggestions
+        # 从constants导入生活建议文本
+        return LIFE_SUGGESTIONS_TEXT
     
     def get_item_display_name(self, item_key: str) -> str:
         """获取项目显示名称"""
