@@ -217,6 +217,7 @@ class MainWindow:
             messagebox.showwarning(UI_TEXTS["input_error"], UI_TEXTS["no_records"])
             return
         
+        # 传递最新的用户数据给报告窗口
         report_window = ReportWindow(self.current_user, self.window)
         report_window.show()
     
