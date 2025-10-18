@@ -21,9 +21,9 @@ ENV/
 *.log
 
 # Data files (user data should not be committed)
-/data/
-data/users.json
-data/last_user.json
+# 保留 data 目录但忽略其中的用户数据文件
+data/*
+!data/.gitkeep
 
 # IDE
 .vscode/

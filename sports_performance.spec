@@ -10,11 +10,14 @@ from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 block_cipher = None
 
-# 收集所有数据文件
+# 收集所有数据文件（只包含必需的配置文件）
 datas = [
-    ('data', 'data'),
     ('config', 'config'),
 ]
+
+# 如果 data 目录存在则添加（用户数据应存储在系统目录，不打包进应用）
+if os.path.exists('data'):
+    datas.append(('data', 'data'))
 
 # 收集所有隐藏导入
 hiddenimports = [
