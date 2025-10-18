@@ -12,7 +12,11 @@ from models.score import ScoreRecord
 from services.score_calculator import ScoreCalculator
 from services.data_manager import DataManager
 from utils.validator import DataValidator
-from config.constants import GENDER_MALE, GENDER_FEMALE, PROJECT_NAMES
+from config.constants import (
+    GENDER_MALE, GENDER_FEMALE, PROJECT_NAMES,
+    INPUT_WINDOW_CONFIG, WINDOW_SIZES, WINDOW_TITLES,
+    BUTTON_TEXTS, LABEL_FRAME_TITLES, INPUT_HINTS, PROJECT_LABELS, UI_TEXTS
+)
 from ui.custom_button import CustomButton
 
 
@@ -33,26 +37,26 @@ class InputWindow:
         """设置用户界面"""
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
-        self.window.title(f"成绩录入 - {self.user.name}")
-        self.window.geometry("750x700")
+        self.window.title(WINDOW_TITLES["input"].format(self.user.name))
+        self.window.geometry(WINDOW_SIZES["input"])
         self.window.resizable(False, False)
         
         # 设置窗口背景色
-        self.window.configure(bg="#ecf0f1")
+        self.window.configure(bg=INPUT_WINDOW_CONFIG["bg_color"])
         
         # 设置窗口居中
         self.center_window()
         
         # 创建外层容器
-        outer_frame = tk.Frame(self.window, bg="#ecf0f1")
+        outer_frame = tk.Frame(self.window, bg=INPUT_WINDOW_CONFIG["bg_color"])
         outer_frame.pack(fill=tk.BOTH, expand=True)
         
         # 创建Canvas和滚动条
-        canvas = tk.Canvas(outer_frame, bg="#ecf0f1", highlightthickness=0)
+        canvas = tk.Canvas(outer_frame, bg=INPUT_WINDOW_CONFIG["bg_color"], highlightthickness=0)
         scrollbar = tk.Scrollbar(outer_frame, orient=tk.VERTICAL, command=canvas.yview)
         
         # 创建可滚动的主框架
-        main_frame = tk.Frame(canvas, bg="#ecf0f1", padx=30, pady=25)
+        main_frame = tk.Frame(canvas, bg=INPUT_WINDOW_CONFIG["bg_color"], padx=30, pady=25)
         
         # 配置Canvas
         main_frame.bind(
@@ -92,13 +96,13 @@ class InputWindow:
         self.scrollbar = scrollbar
         
         # 标题框架
-        title_frame = tk.Frame(main_frame, bg="#16a085", pady=25)
+        title_frame = tk.Frame(main_frame, bg=INPUT_WINDOW_CONFIG["title_bg"], pady=25)
         title_frame.pack(fill=tk.X, pady=(0, 30))
         
         # 标题
         title_label = tk.Label(title_frame, text=f"📝 成绩录入 - {self.user.name}", 
-                               font=("Microsoft YaHei", 22, "bold"),
-                               bg="#16a085", fg="white")
+                               font=INPUT_WINDOW_CONFIG["title_font"],
+                               bg=INPUT_WINDOW_CONFIG["title_bg"], fg=INPUT_WINDOW_CONFIG["title_fg"])
         title_label.pack()
         
         # 副标题
@@ -108,9 +112,9 @@ class InputWindow:
         subtitle_label.pack(pady=(5, 0))
         
         # 必选项框架
-        required_frame = tk.LabelFrame(main_frame, text=" 🏃 必选项 (10分) ", 
-                                       font=("Microsoft YaHei", 12, "bold"),
-                                       bg="#ffffff", fg="#c0392b",
+        required_frame = tk.LabelFrame(main_frame, text=LABEL_FRAME_TITLES["required"], 
+                                       font=INPUT_WINDOW_CONFIG["section_font"],
+                                       bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["required_color"],
                                        padx=25, pady=20, relief=tk.FLAT, bd=2)
         required_frame.pack(fill=tk.X, pady=(0, 20))
         
@@ -166,9 +170,9 @@ class InputWindow:
         self.required_score_label.pack(anchor=tk.W)
         
         # 第一类选考框架
-        category1_frame = tk.LabelFrame(main_frame, text=" 💪 第一类选考 (10分) ", 
-                                        font=("Microsoft YaHei", 12, "bold"),
-                                        bg="#ffffff", fg="#2980b9",
+        category1_frame = tk.LabelFrame(main_frame, text=LABEL_FRAME_TITLES["category1"], 
+                                        font=INPUT_WINDOW_CONFIG["section_font"],
+                                        bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["category1_color"],
                                         padx=25, pady=20, relief=tk.FLAT, bd=2)
         category1_frame.pack(fill=tk.X, pady=(0, 20))
         
@@ -201,9 +205,9 @@ class InputWindow:
         self.category1_score_label.pack(anchor=tk.W)
         
         # 第二类选考框架
-        category2_frame = tk.LabelFrame(main_frame, text=" ⚽ 第二类选考 (10分) ", 
-                                        font=("Microsoft YaHei", 12, "bold"),
-                                        bg="#ffffff", fg="#e67e22",
+        category2_frame = tk.LabelFrame(main_frame, text=LABEL_FRAME_TITLES["category2"], 
+                                        font=INPUT_WINDOW_CONFIG["section_font"],
+                                        bg=INPUT_WINDOW_CONFIG["frame_bg"], fg=INPUT_WINDOW_CONFIG["category2_color"],
                                         padx=25, pady=20, relief=tk.FLAT, bd=2)
         category2_frame.pack(fill=tk.X, pady=(0, 20))
         
@@ -253,23 +257,19 @@ class InputWindow:
         button_frame.pack(fill=tk.X)
         
         # 保存按钮
-        self.save_button = CustomButton(button_frame, text="💾 保存成绩", 
+        self.save_button = CustomButton(button_frame, text=BUTTON_TEXTS["save"], 
                                         command=self.handle_save,
-                                        font=("Microsoft YaHei", 12, "bold"),
-                                        bg="#2ecc71", fg="white",
-                                        width=12, height=2,
-                                        activebackground="#27ae60",
-                                        activeforeground="white")
+                                        font=INPUT_WINDOW_CONFIG["section_font"],
+                                        bg=INPUT_WINDOW_CONFIG["save_button_bg"], fg="white",
+                                        width=12, height=2)
         self.save_button.pack(side=tk.LEFT, padx=(0, 15), fill=tk.X, expand=True)
         
         # 重置按钮
-        self.reset_button = CustomButton(button_frame, text="🔄 重置", 
+        self.reset_button = CustomButton(button_frame, text=BUTTON_TEXTS["reset"], 
                                          command=self.handle_reset,
-                                         font=("Microsoft YaHei", 12, "bold"),
-                                         bg="#95a5a6", fg="white",
-                                         width=12, height=2,
-                                         activebackground="#7f8c8d",
-                                         activeforeground="white")
+                                         font=INPUT_WINDOW_CONFIG["section_font"],
+                                         bg=INPUT_WINDOW_CONFIG["reset_button_bg"], fg="white",
+                                         width=12, height=2)
         self.reset_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
         
         # 绑定事件
@@ -576,29 +576,29 @@ class InputWindow:
         seconds = self.required_seconds_var.get()
         
         if minutes == 0 and seconds == 0:
-            messagebox.showerror("输入错误", "请输入必选项成绩")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["required_time"])
             return False
         
         if seconds >= 60:
-            messagebox.showerror("输入错误", "秒钟数必须小于60")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["seconds_range"])
             return False
         
         # 验证第一类选考
         if not self.category1_var.get():
-            messagebox.showerror("输入错误", "请选择第一类选考项目")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category1_required"])
             return False
         
         if not self.category1_var_value.get().strip():
-            messagebox.showerror("输入错误", "请输入第一类选考成绩")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category1_score"])
             return False
         
         # 验证第二类选考
         if not self.category2_var.get():
-            messagebox.showerror("输入错误", "请选择第二类选考项目")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category2_required"])
             return False
         
         if not self.category2_var_value.get().strip():
-            messagebox.showerror("输入错误", "请输入第二类选考成绩")
+            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category2_score"])
             return False
         
         return True
@@ -639,17 +639,17 @@ class InputWindow:
             
             # 使用DataManager保存记录（会自动添加到用户对象并保存到文件）
             if self.data_manager.add_score_record(self.user.id, record_data):
-                messagebox.showinfo("保存成功", f"成绩已保存！\n总分: {scores['total']:.1f}")
+                messagebox.showinfo(UI_TEXTS["save_success"], f"成绩已保存！\n总分: {scores['total']:.1f}")
                 
                 if self.on_save_success:
                     self.on_save_success(record_data)
                 
                 self.handle_reset()
             else:
-                messagebox.showerror("保存失败", "无法保存成绩记录，请检查用户是否存在")
+                messagebox.showerror(UI_TEXTS["save_failed"], "无法保存成绩记录，请检查用户是否存在")
             
         except Exception as e:
-            messagebox.showerror("保存失败", f"保存成绩时发生错误: {str(e)}")
+            messagebox.showerror(UI_TEXTS["save_failed"], f"保存成绩时发生错误: {str(e)}")
     
     def parse_category1_value(self, project: str, value_str: str):
         """解析第一类选考值"""

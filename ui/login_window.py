@@ -9,7 +9,11 @@ from typing import Optional, Callable
 from models.user import User
 from services.data_manager import DataManager
 from utils.validator import DataValidator
-from config.constants import GENDER_MALE, GENDER_FEMALE
+from config.constants import (
+    GENDER_MALE, GENDER_FEMALE,
+    LOGIN_WINDOW_CONFIG, WINDOW_SIZES, WINDOW_TITLES,
+    BUTTON_TEXTS, LABEL_FRAME_TITLES, UI_TEXTS, GENDER_CONFIG
+)
 from ui.custom_button import CustomButton
 
 
@@ -29,123 +33,119 @@ class LoginWindow:
         """设置用户界面"""
         # 创建主窗口
         self.window = tk.Toplevel(self.parent) if self.parent else tk.Tk()
-        self.window.title("用户登录 - 体育成绩评估系统")
-        self.window.geometry("600x700")
+        self.window.title(WINDOW_TITLES["login"])
+        self.window.geometry(WINDOW_SIZES["login"])
         self.window.resizable(False, False)
         
         # 设置窗口背景色
-        self.window.configure(bg="#ecf0f1")
+        self.window.configure(bg=LOGIN_WINDOW_CONFIG["bg_color"])
         
         # 设置窗口居中
         self.center_window()
         
         # 创建主框架
-        main_frame = tk.Frame(self.window, bg="#ecf0f1", padx=35, pady=25)
+        main_frame = tk.Frame(self.window, bg=LOGIN_WINDOW_CONFIG["bg_color"], padx=35, pady=25)
         main_frame.pack(fill=tk.BOTH, expand=True)
         
-        # 标题框架 - 统一为青绿色
-        title_frame = tk.Frame(main_frame, bg="#16a085", pady=25)
+        # 标题框架
+        title_frame = tk.Frame(main_frame, bg=LOGIN_WINDOW_CONFIG["title_bg"], pady=25)
         title_frame.pack(fill=tk.X, pady=(0, 30))
         
         # 标题
         title_label = tk.Label(title_frame, text="🏃 体育成绩评估系统", 
-                              font=("Microsoft YaHei", 22, "bold"),
-                              bg="#16a085", fg="white")
+                              font=LOGIN_WINDOW_CONFIG["title_font"],
+                              bg=LOGIN_WINDOW_CONFIG["title_bg"], fg=LOGIN_WINDOW_CONFIG["title_fg"])
         title_label.pack()
         
         # 副标题
         subtitle_label = tk.Label(title_frame, text="用户登录 / User Login",
-                                 font=("Arial", 9),
-                                 bg="#16a085", fg="#ecf0f1")
+                                 font=LOGIN_WINDOW_CONFIG["subtitle_font"],
+                                 bg=LOGIN_WINDOW_CONFIG["title_bg"], fg=LOGIN_WINDOW_CONFIG["bg_color"])
         subtitle_label.pack(pady=(5, 0))
         
         # 用户信息输入框架
-        info_frame = tk.LabelFrame(main_frame, text=" 👤 用户信息 ", 
-                                   font=("Microsoft YaHei", 12, "bold"),
-                                   bg="#ffffff", fg="#2c3e50",
+        info_frame = tk.LabelFrame(main_frame, text=LABEL_FRAME_TITLES["user_info"], 
+                                   font=LOGIN_WINDOW_CONFIG["section_font"],
+                                   bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["frame_fg"],
                                    padx=25, pady=20, relief=tk.FLAT, bd=2)
         info_frame.pack(fill=tk.X, pady=(0, 25))
         
         # 姓名输入区域
-        name_container = tk.Frame(info_frame, bg="#ffffff")
+        name_container = tk.Frame(info_frame, bg=LOGIN_WINDOW_CONFIG["frame_bg"])
         name_container.pack(fill=tk.X, pady=(0, 15))
         
         name_label = tk.Label(name_container, text="姓名", 
-                             font=("Microsoft YaHei", 11, "bold"),
-                             bg="#ffffff", fg="#16a085")
+                             font=LOGIN_WINDOW_CONFIG["label_font_bold"],
+                             bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["label_primary_color"])
         name_label.pack(anchor=tk.W)
         
         self.name_var = tk.StringVar()
         self.name_entry = tk.Entry(name_container, textvariable=self.name_var, 
-                                   font=("Microsoft YaHei", 11),
+                                   font=LOGIN_WINDOW_CONFIG["entry_font"],
                                    relief=tk.SOLID, bd=1, 
-                                   highlightthickness=1, highlightcolor="#16a085")
+                                   highlightthickness=1, highlightcolor=LOGIN_WINDOW_CONFIG["label_primary_color"])
         self.name_entry.pack(fill=tk.X, pady=(5, 0), ipady=5)
         
         # 性别选择区域
-        gender_container = tk.Frame(info_frame, bg="#ffffff")
+        gender_container = tk.Frame(info_frame, bg=LOGIN_WINDOW_CONFIG["frame_bg"])
         gender_container.pack(fill=tk.X)
         
         gender_label = tk.Label(gender_container, text="性别", 
-                               font=("Microsoft YaHei", 11, "bold"),
-                               bg="#ffffff", fg="#16a085")
+                               font=LOGIN_WINDOW_CONFIG["label_font_bold"],
+                               bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["label_primary_color"])
         gender_label.pack(anchor=tk.W)
         
         self.gender_var = tk.StringVar(value=GENDER_MALE)
-        gender_frame = tk.Frame(gender_container, bg="#ffffff")
+        gender_frame = tk.Frame(gender_container, bg=LOGIN_WINDOW_CONFIG["frame_bg"])
         gender_frame.pack(anchor=tk.W, pady=(8, 0))
         
-        male_radio = tk.Radiobutton(gender_frame, text="男", variable=self.gender_var, 
-                                   value=GENDER_MALE, font=("Microsoft YaHei", 11),
-                                   bg="#ffffff", fg="#34495e", 
-                                   selectcolor="#3498db",
-                                   activebackground="#ffffff",
+        male_radio = tk.Radiobutton(gender_frame, text=GENDER_CONFIG["male"]["text"], variable=self.gender_var, 
+                                   value=GENDER_MALE, font=LOGIN_WINDOW_CONFIG["label_font_normal"],
+                                   bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["label_secondary_color"], 
+                                   selectcolor=LOGIN_WINDOW_CONFIG["male_color"],
+                                   activebackground=LOGIN_WINDOW_CONFIG["frame_bg"],
                                    indicatoron=True)
         male_radio.pack(side=tk.LEFT, padx=(0, 30))
         
-        female_radio = tk.Radiobutton(gender_frame, text="女", variable=self.gender_var, 
-                                     value=GENDER_FEMALE, font=("Microsoft YaHei", 11),
-                                     bg="#ffffff", fg="#34495e", 
-                                     selectcolor="#e74c3c",
-                                     activebackground="#ffffff",
+        female_radio = tk.Radiobutton(gender_frame, text=GENDER_CONFIG["female"]["text"], variable=self.gender_var, 
+                                     value=GENDER_FEMALE, font=LOGIN_WINDOW_CONFIG["label_font_normal"],
+                                     bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["label_secondary_color"], 
+                                     selectcolor=LOGIN_WINDOW_CONFIG["female_color"],
+                                     activebackground=LOGIN_WINDOW_CONFIG["frame_bg"],
                                      indicatoron=True)
         female_radio.pack(side=tk.LEFT)
         
         # 按钮框架
-        button_frame = tk.Frame(main_frame, bg="#ecf0f1")
+        button_frame = tk.Frame(main_frame, bg=LOGIN_WINDOW_CONFIG["bg_color"])
         button_frame.pack(fill=tk.X, pady=(0, 25))
         
         # 登录按钮
-        self.login_button = CustomButton(button_frame, text="🔑 登录", 
+        self.login_button = CustomButton(button_frame, text=BUTTON_TEXTS["login"], 
                                          command=self.handle_login,
-                                         font=("Microsoft YaHei", 12, "bold"),
-                                         bg="#3498db", fg="white",
-                                         width=12, height=2,
-                                         activebackground="#2980b9",
-                                         activeforeground="white")
+                                         font=LOGIN_WINDOW_CONFIG["section_font"],
+                                         bg=LOGIN_WINDOW_CONFIG["login_button_bg"], fg="white",
+                                         width=12, height=2)
         self.login_button.pack(side=tk.LEFT, padx=(0, 15), fill=tk.X, expand=True)
         
         # 注册按钮
-        self.register_button = CustomButton(button_frame, text="📝 注册新用户", 
+        self.register_button = CustomButton(button_frame, text=BUTTON_TEXTS["register"], 
                                             command=self.handle_register,
-                                            font=("Microsoft YaHei", 12, "bold"),
-                                            bg="#2ecc71", fg="white",
-                                            width=12, height=2,
-                                            activebackground="#27ae60",
-                                            activeforeground="white")
+                                            font=LOGIN_WINDOW_CONFIG["section_font"],
+                                            bg=LOGIN_WINDOW_CONFIG["register_button_bg"], fg="white",
+                                            width=12, height=2)
         self.register_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
         
         # 已有用户列表
-        users_frame = tk.LabelFrame(main_frame, text=" 📋 已有用户 (点击选择) ", 
-                                    font=("Microsoft YaHei", 12, "bold"),
-                                    bg="#ffffff", fg="#2c3e50",
+        users_frame = tk.LabelFrame(main_frame, text=LABEL_FRAME_TITLES["existing_users"], 
+                                    font=LOGIN_WINDOW_CONFIG["section_font"],
+                                    bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["frame_fg"],
                                     padx=20, pady=15, relief=tk.FLAT, bd=2)
         users_frame.pack(fill=tk.BOTH, expand=True)
         
         # 创建滚动区域
-        canvas = tk.Canvas(users_frame, bg="#ffffff", highlightthickness=0)
+        canvas = tk.Canvas(users_frame, bg=LOGIN_WINDOW_CONFIG["frame_bg"], highlightthickness=0)
         scrollbar = ttk.Scrollbar(users_frame, orient=tk.VERTICAL, command=canvas.yview)
-        self.users_cards_frame = tk.Frame(canvas, bg="#ffffff")
+        self.users_cards_frame = tk.Frame(canvas, bg=LOGIN_WINDOW_CONFIG["frame_bg"])
         
         self.users_cards_frame.bind(
             "<Configure>",
@@ -164,8 +164,8 @@ class LoginWindow:
         # 状态栏
         self.status_var = tk.StringVar(value="💡 请输入用户信息或点击选择已有用户")
         status_label = tk.Label(main_frame, textvariable=self.status_var,
-                               font=("Microsoft YaHei", 10),
-                               bg="#ecf0f1", fg="#7f8c8d")
+                               font=LOGIN_WINDOW_CONFIG["label_font_small"],
+                               bg=LOGIN_WINDOW_CONFIG["bg_color"], fg=LOGIN_WINDOW_CONFIG["label_hint_color"])
         status_label.pack(pady=(15, 0))
     
     def center_window(self):
@@ -190,9 +190,9 @@ class LoginWindow:
         if not users:
             # 没有用户时显示提示
             no_user_label = tk.Label(self.users_cards_frame, 
-                                     text="暂无用户，请注册新用户",
-                                     font=("Microsoft YaHei", 11),
-                                     bg="#ffffff", fg="#95a5a6")
+                                     text=UI_TEXTS["no_users"],
+                                     font=LOGIN_WINDOW_CONFIG["label_font_normal"],
+                                     bg=LOGIN_WINDOW_CONFIG["frame_bg"], fg=LOGIN_WINDOW_CONFIG["label_hint_color"])
             no_user_label.pack(pady=20)
             self.user_cards.append(no_user_label)
             return
@@ -202,35 +202,37 @@ class LoginWindow:
     
     def _create_user_card(self, user: User):
         """创建用户卡片"""
-        gender_text = "男" if user.gender == GENDER_MALE else "女"
-        gender_icon = "👨" if user.gender == GENDER_MALE else "👩"
-        gender_color = "#3498db" if user.gender == GENDER_MALE else "#e74c3c"
+        gender_config = GENDER_CONFIG[user.gender]
+        gender_text = gender_config["text"]
+        gender_icon = gender_config["icon"]
+        gender_color = gender_config["color"]
         record_count = len(user.records)
         
         # 创建卡片容器
-        card = tk.Frame(self.users_cards_frame, bg="#f8f9fa", 
+        card = tk.Frame(self.users_cards_frame, bg=LOGIN_WINDOW_CONFIG["card_bg"], 
                        relief=tk.SOLID, bd=1, cursor="hand2")
         card.pack(fill=tk.X, pady=5, padx=5)
         
         # 内容框架
-        content_frame = tk.Frame(card, bg="#f8f9fa")
+        content_frame = tk.Frame(card, bg=LOGIN_WINDOW_CONFIG["card_bg"])
         content_frame.pack(fill=tk.X, padx=15, pady=12)
         
         # 左侧：用户信息
-        left_frame = tk.Frame(content_frame, bg="#f8f9fa")
+        left_frame = tk.Frame(content_frame, bg=LOGIN_WINDOW_CONFIG["card_bg"])
         left_frame.pack(side=tk.LEFT, fill=tk.X, expand=True)
         
         # 用户名和性别
-        name_frame = tk.Frame(left_frame, bg="#f8f9fa")
+        name_frame = tk.Frame(left_frame, bg=LOGIN_WINDOW_CONFIG["card_bg"])
         name_frame.pack(anchor=tk.W)
         
         name_label = tk.Label(name_frame, text=f"{gender_icon} {user.name}", 
-                             font=("Microsoft YaHei", 12, "bold"),
-                             bg="#f8f9fa", fg="#2c3e50")
+                             font=LOGIN_WINDOW_CONFIG["label_font_normal"],
+                             bg=LOGIN_WINDOW_CONFIG["card_bg"], fg=LOGIN_WINDOW_CONFIG["card_text_color"])
+        name_label.config(font=(LOGIN_WINDOW_CONFIG["label_font_normal"][0], 12, "bold"))
         name_label.pack(side=tk.LEFT)
         
         gender_badge = tk.Label(name_frame, text=gender_text, 
-                               font=("Microsoft YaHei", 9),
+                               font=LOGIN_WINDOW_CONFIG["label_font_tiny"],
                                bg=gender_color, fg="white",
                                padx=6, pady=2)
         gender_badge.pack(side=tk.LEFT, padx=(8, 0))
@@ -238,14 +240,14 @@ class LoginWindow:
         # 记录数
         record_label = tk.Label(left_frame, 
                                text=f"📊 已有 {record_count} 条记录",
-                               font=("Microsoft YaHei", 10),
-                               bg="#f8f9fa", fg="#7f8c8d")
+                               font=LOGIN_WINDOW_CONFIG["label_font_small"],
+                               bg=LOGIN_WINDOW_CONFIG["card_bg"], fg=LOGIN_WINDOW_CONFIG["card_hint_color"])
         record_label.pack(anchor=tk.W, pady=(3, 0))
         
         # 右侧：选择按钮
         select_icon = tk.Label(content_frame, text="→", 
                               font=("Arial", 16, "bold"),
-                              bg="#f8f9fa", fg="#16a085")
+                              bg=LOGIN_WINDOW_CONFIG["card_bg"], fg=LOGIN_WINDOW_CONFIG["label_primary_color"])
         select_icon.pack(side=tk.RIGHT)
         
         # 绑定点击事件
@@ -254,22 +256,24 @@ class LoginWindow:
         
         # 悬停效果处理
         def on_enter(event=None):
-            card.config(bg="#e8f4f8")
-            content_frame.config(bg="#e8f4f8")
-            left_frame.config(bg="#e8f4f8")
-            name_frame.config(bg="#e8f4f8")
-            name_label.config(bg="#e8f4f8")
-            record_label.config(bg="#e8f4f8")
-            select_icon.config(bg="#e8f4f8")
+            hover_bg = LOGIN_WINDOW_CONFIG["card_hover_bg"]
+            card.config(bg=hover_bg)
+            content_frame.config(bg=hover_bg)
+            left_frame.config(bg=hover_bg)
+            name_frame.config(bg=hover_bg)
+            name_label.config(bg=hover_bg)
+            record_label.config(bg=hover_bg)
+            select_icon.config(bg=hover_bg)
         
         def on_leave(event=None):
-            card.config(bg="#f8f9fa")
-            content_frame.config(bg="#f8f9fa")
-            left_frame.config(bg="#f8f9fa")
-            name_frame.config(bg="#f8f9fa")
-            name_label.config(bg="#f8f9fa")
-            record_label.config(bg="#f8f9fa")
-            select_icon.config(bg="#f8f9fa")
+            card_bg = LOGIN_WINDOW_CONFIG["card_bg"]
+            card.config(bg=card_bg)
+            content_frame.config(bg=card_bg)
+            left_frame.config(bg=card_bg)
+            name_frame.config(bg=card_bg)
+            name_label.config(bg=card_bg)
+            record_label.config(bg=card_bg)
+            select_icon.config(bg=card_bg)
         
         # 所有组件都绑定事件
         for widget in [card, content_frame, left_frame, name_frame, 

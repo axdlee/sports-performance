@@ -4,6 +4,7 @@
 """
 
 import tkinter as tk
+from config.constants import CUSTOM_BUTTON_CONFIG
 
 
 class CustomButton(tk.Frame):
@@ -13,12 +14,12 @@ class CustomButton(tk.Frame):
     """
     
     def __init__(self, parent, text="", command=None, 
-                 bg="#3498db", fg="white", 
-                 font=("Microsoft YaHei", 11, "bold"),
-                 width=20, height=2,
+                 bg=None, fg=None, 
+                 font=None,
+                 width=None, height=None,
                  activebackground=None, activeforeground=None,
-                 disabledbackground="#bdc3c7", disabledforeground="#7f8c8d",
-                 state=tk.NORMAL, cursor="hand2", **kwargs):
+                 disabledbackground=None, disabledforeground=None,
+                 state=tk.NORMAL, cursor=None, **kwargs):
         """
         初始化自定义按钮
         
@@ -38,6 +39,16 @@ class CustomButton(tk.Frame):
             state: 按钮状态 (tk.NORMAL 或 tk.DISABLED)
             cursor: 鼠标光标样式
         """
+        # 使用配置文件中的默认值
+        bg = bg or CUSTOM_BUTTON_CONFIG["default_bg"]
+        fg = fg or CUSTOM_BUTTON_CONFIG["default_fg"]
+        font = font or CUSTOM_BUTTON_CONFIG["default_font"]
+        width = width or CUSTOM_BUTTON_CONFIG["default_width"]
+        height = height or CUSTOM_BUTTON_CONFIG["default_height"]
+        disabledbackground = disabledbackground or CUSTOM_BUTTON_CONFIG["disabled_bg"]
+        disabledforeground = disabledforeground or CUSTOM_BUTTON_CONFIG["disabled_fg"]
+        cursor = cursor or CUSTOM_BUTTON_CONFIG["cursor"]
+        
         # 初始化Frame
         super().__init__(parent, bg=bg, cursor=cursor, **kwargs)
         
@@ -81,6 +92,7 @@ class CustomButton(tk.Frame):
         """
         将颜色变暗（用于悬停效果）
         """
+        factor = CUSTOM_BUTTON_CONFIG["hover_darken_factor"]
         if color.startswith('#'):
             # 解析十六进制颜色
             r = int(color[1:3], 16)
@@ -88,9 +100,9 @@ class CustomButton(tk.Frame):
             b = int(color[5:7], 16)
             
             # 降低亮度
-            r = max(0, int(r * 0.8))
-            g = max(0, int(g * 0.8))
-            b = max(0, int(b * 0.8))
+            r = max(0, int(r * factor))
+            g = max(0, int(g * factor))
+            b = max(0, int(b * factor))
             
             return f"#{r:02x}{g:02x}{b:02x}"
         return color
@@ -139,7 +151,19 @@ class CustomButton(tk.Frame):
         """鼠标按下事件"""
         if self._state == tk.NORMAL:
             # 按下时稍微变暗
-            darker_bg = self._darken_color(self.active_bg)
+            press_factor = CUSTOM_BUTTON_CONFIG["press_darken_factor"]
+            # 对active_bg再次变暗
+            if self.active_bg.startswith('#'):
+                r = int(self.active_bg[1:3], 16)
+                g = int(self.active_bg[3:5], 16)
+                b = int(self.active_bg[5:7], 16)
+                r = max(0, int(r * press_factor))
+                g = max(0, int(g * press_factor))
+                b = max(0, int(b * press_factor))
+                darker_bg = f"#{r:02x}{g:02x}{b:02x}"
+            else:
+                darker_bg = self.active_bg
+            
             self.configure(bg=darker_bg)
             self.label.configure(bg=darker_bg)
     
