@@ -17,7 +17,9 @@ class ReportWindow:
     """成绩报告窗口类 - 重构版（标签页架构）"""
     
     THEME_PRIMARY = THEME_COLORS["primary"]
+    THEME_PRIMARY_DARK = THEME_COLORS["primary_dark"]  # 新增
     THEME_BG = THEME_COLORS["bg"]
+    THEME_COLORS = THEME_COLORS  # 新增：保存完整的颜色配置供样式使用
     
     def __init__(self, user: User, parent=None):
         self.user = user
@@ -44,30 +46,69 @@ class ReportWindow:
         
         self.center_window()
         
-        main_frame = tk.Frame(self.window, bg=self.THEME_BG, padx=20, pady=15)
-        main_frame.pack(fill=tk.BOTH, expand=True)
+        # 主容器 - 使用 Canvas 实现背景色
+        main_canvas = tk.Canvas(self.window, bg=self.THEME_BG, highlightthickness=0)
+        main_canvas.pack(fill=tk.BOTH, expand=True)
         
-        # 标题框架
-        title_frame = tk.Frame(main_frame, bg=self.THEME_PRIMARY, pady=20)
-        title_frame.pack(fill=tk.X, pady=(0, 20))
+        # 标题区域 - 使用深色主色调
+        title_frame = tk.Frame(main_canvas, bg=self.THEME_PRIMARY, pady=25)
+        title_frame.pack(fill=tk.X)
         
-        title_label = tk.Label(title_frame, text=f"📊 成绩报告 - {self.user.name}", 
+        # 标题内容容器
+        title_content = tk.Frame(title_frame, bg=self.THEME_PRIMARY)
+        title_content.pack()
+        
+        title_label = tk.Label(title_content, text=f"📊 成绩报告 - {self.user.name}", 
                                font=FONTS["title"],
                                bg=self.THEME_PRIMARY, fg="white")
         title_label.pack()
         
         gender_text = "男生" if self.user.gender == "male" else "女生"
-        subtitle_label = tk.Label(title_frame, text=f"{gender_text} | Performance Report",
+        subtitle_label = tk.Label(title_content, text=f"{gender_text} | Performance Report",
                                  font=FONTS["subtitle"],
-                                 bg=self.THEME_PRIMARY, fg="#ecf0f1")
+                                 bg=self.THEME_PRIMARY, fg="#e0f2f1")
         subtitle_label.pack(pady=(5, 0))
         
-        # 创建笔记本控件（标签页）
-        style = ttk.Style()
-        style.configure('Report.TNotebook', background=self.THEME_BG)
-        style.configure('Report.TNotebook.Tab', padding=[20, 10], font=FONTS["section_title"])
+        # 内容区域 - 增加内边距
+        content_frame = tk.Frame(main_canvas, bg=self.THEME_BG, padx=20, pady=20)
+        content_frame.pack(fill=tk.BOTH, expand=True)
         
-        notebook = ttk.Notebook(main_frame, style='Report.TNotebook')
+        # 自定义 Notebook 样式
+        style = ttk.Style()
+        style.theme_use('clam')  # 使用 clam 主题以支持更多自定义
+        
+        # Notebook 整体样式
+        style.configure('Report.TNotebook', background=self.THEME_BG, borderwidth=0)
+        style.layout('Report.TNotebook.Tab', [
+            ('Notebook.tab', {
+                'sticky': 'nswe', 
+                'children': [
+                    ('Notebook.padding', {
+                        'side': 'top', 
+                        'sticky': 'nswe',
+                        'children': [
+                            ('Notebook.label', {'side': 'top', 'sticky': ''})
+                        ]
+                    })
+                ]
+            })
+        ])
+        
+        # 标签样式
+        style.configure('Report.TNotebook.Tab', 
+                       padding=[25, 12], 
+                       font=FONTS["section_title"],
+                       background=self.THEME_BG,
+                       foreground=self.THEME_COLORS["text_light"],
+                       borderwidth=0)
+                       
+        style.map('Report.TNotebook.Tab',
+                 background=[('selected', self.THEME_COLORS["card"]), ('active', "#e0f2f1")],
+                 foreground=[('selected', self.THEME_PRIMARY), ('active', self.THEME_PRIMARY_DARK)],
+                 expand=[('selected', [0, 0, 0, 0])])  # 移除选中时的位移
+        
+        # 创建 Notebook
+        notebook = ttk.Notebook(content_frame, style='Report.TNotebook')
         notebook.pack(fill=tk.BOTH, expand=True)
         
         # 初始化各标签页
@@ -117,7 +158,7 @@ class ReportWindow:
         self.trend_tab.render_chart_in_window()
         
         # 生成训练建议
-        self.suggestions_tab.generate_training_suggestions(latest_record)
+        self.suggestions_tab.display_suggestions(latest_record)
     
     def show_no_data_message(self):
         """显示无数据消息"""

@@ -31,6 +31,7 @@ python build.py
 ```
 
 打包脚本会自动：
+
 - 检查依赖是否安装
 - 清理旧的构建文件
 - 使用 PyInstaller 构建应用
@@ -42,7 +43,7 @@ python build.py
 
 运行 `python build.py` 后会生成：
 
-```
+```shell
 dist/
 ├── 体育成绩评估系统.app          # macOS 应用包
 └── installer_macos/              # 安装包目录
@@ -197,6 +198,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 - **Linux**: `~/.local/share/SportsPerformance/`
 
 这确保了：
+
 - ✅ 应用包保持只读状态
 - ✅ 数据在应用更新后保留
 - ✅ 符合各平台的标准实践
@@ -209,6 +211,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ### Q: PyInstaller 构建失败
 
 **A:** 检查以下内容：
+
 - 确保所有依赖已安装：`pip install -r requirements.txt`
 - 更新 PyInstaller：`pip install --upgrade pyinstaller`
 - 清理缓存：删除 `build/` 和 `dist/` 目录后重试
@@ -216,6 +219,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ### Q: macOS 提示"无法打开，因为来自身份不明的开发者"
 
 **A:** 有两种解决方法：
+
 1. 右键点击应用 → 选择"打开"
 2. 在"系统偏好设置 > 安全性与隐私"中允许运行
 3. 对应用进行代码签名（推荐用于发布）
@@ -223,6 +227,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ### Q: Windows Defender 报毒
 
 **A:** PyInstaller 打包的程序常被误报：
+
 1. 点击"更多信息" → "仍要运行"
 2. 将程序添加到信任列表
 3. 对 exe 进行数字签名（推荐用于发布）
@@ -230,6 +235,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ### Q: 应用体积过大
 
 **A:** 优化建议：
+
 - 使用虚拟环境，只安装必要的依赖
 - 在 spec 文件中排除不需要的模块
 - 使用 UPX 压缩（已在 spec 中启用）
@@ -237,6 +243,7 @@ convert icon.png -define icon:auto-resize=256,128,96,64,48,32,16 assets/icon.ico
 ### Q: 找不到 data 文件
 
 **A:** 确保：
+
 - data 目录存在于项目根目录
 - spec 文件中正确配置了 datas
 - 代码中使用正确的路径（参考下方）
@@ -264,12 +271,14 @@ data_file = get_resource_path("data/users.json")
 ### macOS 分发
 
 分发以下内容：
+
 - `dist/installer_macos/` 整个目录，或
 - `dist/体育成绩评估系统-v1.0.0-macOS.dmg`（如果已创建）
 
 ### Windows 分发
 
 分发以下内容之一：
+
 - `dist/installer_windows/` 整个目录（压缩为 ZIP）
 - `dist/installer_windows/体育成绩评估系统-v1.0.0-Windows-Setup.exe`（如果已创建）
 
@@ -326,6 +335,7 @@ jobs:
 ## 支持
 
 如有打包相关问题，请检查：
+
 1. Python 版本（建议 3.8-3.11）
 2. PyInstaller 版本（建议 5.0+）
 3. 操作系统版本

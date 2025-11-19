@@ -68,34 +68,40 @@ REPORT_WINDOW_SIZE = "1100x800"
 
 # 颜色主题配置
 THEME_COLORS = {
-    "primary": "#16a085",        # 青绿色主题
-    "bg": "#ecf0f1",             # 背景色
+    "primary": "#009688",        # Teal 500 - 主色调
+    "primary_dark": "#00796b",   # Teal 700 - 深色主色调
+    "primary_light": "#b2dfdb",  # Teal 100 - 浅色主色调
+    "bg": "#f5f7fa",             # 浅灰背景
     "card": "#ffffff",           # 卡片背景
-    "success": "#2ecc71",        # 成功/优秀
-    "warning": "#f39c12",        # 警告/中等
-    "danger": "#e74c3c",         # 危险/不及格
-    "info": "#3498db",           # 信息
-    "text_dark": "#2c3e50",      # 深色文字
-    "text_light": "#7f8c8d",     # 浅色文字
-    "strong_bg": "#d5f4e6",      # 最强项背景
-    "weak_bg": "#fadbd8",        # 最弱项背景
-    "medium_bg": "#fff3cd",      # 中等背景
-    "stats_bg": "#f8f9fa"        # 统计背景
+    "success": "#4caf50",        # Green 500
+    "warning": "#ff9800",        # Orange 500
+    "danger": "#f44336",         # Red 500
+    "info": "#2196f3",           # Blue 500
+    "text_dark": "#263238",      # Blue Grey 900
+    "text_normal": "#37474f",    # Blue Grey 800
+    "text_light": "#78909c",     # Blue Grey 400
+    "strong_bg": "#e0f2f1",      # 最强项背景 (Teal 50)
+    "weak_bg": "#ffebee",        # 最弱项背景 (Red 50)
+    "medium_bg": "#fff3e0",      # 中等背景 (Orange 50)
+    "stats_bg": "#eceff1",       # 统计背景 (Blue Grey 50)
+    "border": "#cfd8dc"          # 边框颜色 (Blue Grey 100)
 }
 
 # 字体配置
 FONTS = {
-    "title": ("Microsoft YaHei", 20, "bold"),
-    "subtitle": ("Arial", 10),
-    "card_title": ("Microsoft YaHei", 12, "bold"),
-    "section_title": ("Microsoft YaHei", 11, "bold"),
-    "text_normal": ("Microsoft YaHei", 11),
-    "text_small": ("Microsoft YaHei", 10),
-    "text_tiny": ("Microsoft YaHei", 9),
-    "score_large": ("Arial", 32, "bold"),
-    "score_medium": ("Microsoft YaHei", 24, "bold"),
-    "score_small": ("Microsoft YaHei", 16, "bold"),
-    "score_detail": ("Microsoft YaHei", 14, "bold")
+    "title": ("Microsoft YaHei UI", 24, "bold"),
+    "subtitle": ("Segoe UI", 11),
+    "card_title": ("Microsoft YaHei UI", 13, "bold"),
+    "section_title": ("Microsoft YaHei UI", 12, "bold"),
+    "text_large": ("Microsoft YaHei UI", 12),
+    "text_normal": ("Microsoft YaHei UI", 11),
+    "text_small": ("Microsoft YaHei UI", 10),
+    "text_tiny": ("Microsoft YaHei UI", 9),
+    "label_font_bold": ("Microsoft YaHei UI", 11, "bold"),
+    "score_large": ("Segoe UI", 36, "bold"),
+    "score_medium": ("Segoe UI", 28, "bold"),
+    "score_small": ("Segoe UI", 18, "bold"),
+    "score_detail": ("Segoe UI", 16, "bold")
 }
 
 # 图表配置

@@ -49,15 +49,18 @@ PyInstaller 打包的程序经常被杀毒软件误报，主要原因：
 ### 其他杀毒软件
 
 **360 安全卫士 / 腾讯电脑管家：**
+
 1. 在拦截提示中选择 **"信任此程序"** 或 **"加入白名单"**
 2. 或在软件设置中添加信任区
 
 **火绒安全软件：**
+
 1. 右键点击被拦截的文件
 2. 选择 **"信任文件"**
 3. 或在设置 → 信任区中添加
 
 **卡巴斯基 / Norton / McAfee：**
+
 1. 在隔离区中找到文件
 2. 选择恢复并添加到例外/信任列表
 
@@ -68,7 +71,8 @@ PyInstaller 打包的程序经常被杀毒软件误报，主要原因：
 ### 1. 查看源代码
 
 本项目完全开源，可以在 GitHub 上查看所有源代码：
-- 仓库地址：https://github.com/axdlee/sports-performance
+
+- 仓库地址：<https://github.com/axdlee/sports-performance>
 - 所有代码都是透明可审查的
 
 ### 2. 自行打包
@@ -90,20 +94,23 @@ python build.py
 ### 3. 使用在线扫描工具
 
 上传 exe 到以下在线扫描服务（多引擎扫描）：
-- VirusTotal: https://www.virustotal.com/
-- Jotti: https://virusscan.jotti.org/
-- MetaDefender: https://metadefender.opswat.com/
+
+- VirusTotal: <https://www.virustotal.com/>
+- Jotti: <https://virusscan.jotti.org/>
+- MetaDefender: <https://metadefender.opswat.com/>
 
 **注意**：即使在这些平台上，也可能有少数引擎误报，这是正常现象。
 
 ## 📊 检测结果说明
 
 如果使用 VirusTotal 扫描，常见结果：
+
 - ✅ **0-5 个引擎报告**：完全正常，大多是误报
 - ⚠️ **5-10 个引擎报告**：可能是启发式误报
 - ❌ **10+ 个主流引擎报告**：可能存在问题（但本程序不会出现这种情况）
 
 典型的 PyInstaller 误报引擎：
+
 - Windows Defender
 - Avira
 - Rising

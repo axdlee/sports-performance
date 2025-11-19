@@ -557,38 +557,138 @@ class InputWindow:
             pass
         return None
     
+    def bind_events(self):
+        """绑定事件"""
+        # 监听必选项变化
+        self.required_minutes_var.trace_add("write", lambda *args: self.calculate_required_score())
+        self.required_seconds_var.trace_add("write", lambda *args: self.calculate_required_score())
+        
+        # 监听第一类选考变化
+        self.category1_combo.bind("<<ComboboxSelected>>", self.on_category1_change)
+        self.category1_var_value.trace_add("write", lambda *args: self.validate_field("category1"))
+        
+        # 监听第二类选考变化
+        self.category2_combo.bind("<<ComboboxSelected>>", self.on_category2_change)
+        self.category2_var_value.trace_add("write", lambda *args: self.validate_field("category2"))
+
+    def validate_field(self, field_type: str):
+        """验证单个字段并提供实时反馈"""
+        if field_type == "category1":
+            entry = self.category1_entry
+            value = self.category1_var_value.get()
+            project_name = self.category1_var.get()
+            project_key = self.category1_options_map.get(project_name)
+        elif field_type == "category2":
+            entry = self.category2_entry
+            value = self.category2_var_value.get()
+            project_name = self.category2_var.get()
+            project_key = self.category2_options_map.get(project_name)
+        else:
+            return
+
+        if not value or not project_key:
+            entry.config(bg="white")
+            return
+
+        is_valid = False
+        
+        # 根据项目类型调用相应的验证器
+        if project_key == "50m":
+            is_valid, _, _ = DataValidator.validate_run_50m(value)
+        elif project_key == "sit_reach":
+            is_valid, _, _ = DataValidator.validate_sit_reach(value)
+        elif project_key == "standing_jump":
+            is_valid, _, _ = DataValidator.validate_jump(value)
+        elif project_key == "pull_ups":
+            is_valid, _, _ = DataValidator.validate_pull_ups(value)
+        elif project_key == "sit_ups":
+            is_valid, _, _ = DataValidator.validate_sit_ups(value)
+        elif project_key == "rope_skipping":
+            is_valid, _, _ = DataValidator.validate_count_input(value, min_value=0, max_value=300)
+        else:
+            is_valid = True # 默认通过
+
+        if is_valid:
+            entry.config(bg="white")
+            # 触发相应的得分计算
+            if field_type == "category1":
+                self.calculate_category1_score()
+            elif field_type == "category2":
+                self.calculate_category2_score()
+        else:
+            entry.config(bg="#ffebee") # 浅红色背景表示错误
+
     def validate_input(self) -> bool:
-        """验证输入数据"""
-        # 验证必选项
+        """验证所有输入数据"""
+        # 1. 验证必选项 (长跑)
         minutes = self.required_minutes_var.get()
         seconds = self.required_seconds_var.get()
         
-        if minutes == 0 and seconds == 0:
-            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["required_time"])
+        if self.required_project == "1000m":
+            is_valid, msg, _ = DataValidator.validate_run_1000m(minutes, seconds)
+        else: # 800m
+            is_valid, msg, _ = DataValidator.validate_run_800m(minutes, seconds)
+            
+        if not is_valid:
+            messagebox.showerror(UI_TEXTS["input_error"], f"{self.required_label.cget('text')}: {msg}")
             return False
         
-        if seconds >= 60:
-            messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["seconds_range"])
-            return False
-        
-        # 验证第一类选考
+        # 2. 验证第一类选考
         if not self.category1_var.get():
             messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category1_required"])
             return False
-        
-        if not self.category1_var_value.get().strip():
+            
+        cat1_val = self.category1_var_value.get().strip()
+        if not cat1_val:
             messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category1_score"])
             return False
+            
+        # 再次调用 validate_field 确保状态正确，虽然这里主要是为了获取验证结果
+        # 为了简单，直接重新验证逻辑
+        project1_key = self.category1_options_map.get(self.category1_var.get())
+        is_valid = True
+        msg = ""
         
-        # 验证第二类选考
+        if project1_key == "50m":
+            is_valid, msg, _ = DataValidator.validate_run_50m(cat1_val)
+        elif project1_key == "sit_reach":
+            is_valid, msg, _ = DataValidator.validate_sit_reach(cat1_val)
+        elif project1_key == "standing_jump":
+            is_valid, msg, _ = DataValidator.validate_jump(cat1_val)
+        elif project1_key == "pull_ups":
+            is_valid, msg, _ = DataValidator.validate_pull_ups(cat1_val)
+            
+        if not is_valid:
+            messagebox.showerror(UI_TEXTS["input_error"], f"第一类选考: {msg}")
+            self.category1_entry.config(bg="#ffebee")
+            return False
+
+        # 3. 验证第二类选考
         if not self.category2_var.get():
             messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category2_required"])
             return False
-        
-        if not self.category2_var_value.get().strip():
+            
+        cat2_val = self.category2_var_value.get().strip()
+        if not cat2_val:
             messagebox.showerror(UI_TEXTS["input_error"], INPUT_HINTS["category2_score"])
             return False
+            
+        project2_key = self.category2_options_map.get(self.category2_var.get())
+        is_valid = True
+        msg = ""
         
+        if project2_key == "sit_ups":
+            is_valid, msg, _ = DataValidator.validate_sit_ups(cat2_val)
+        elif project2_key == "rope_skipping":
+            is_valid, msg, _ = DataValidator.validate_count_input(cat2_val, min_value=0, max_value=300)
+        elif project2_key == "pull_ups": # 如果第二类也有引体向上
+            is_valid, msg, _ = DataValidator.validate_pull_ups(cat2_val)
+            
+        if not is_valid:
+            messagebox.showerror(UI_TEXTS["input_error"], f"第二类选考: {msg}")
+            self.category2_entry.config(bg="#ffebee")
+            return False
+    
         return True
     
     def handle_save(self):

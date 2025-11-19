@@ -119,6 +119,58 @@ class DataValidator:
             return False, "请输入有效的整数", None
     
     @staticmethod
+    def validate_run_50m(value_str: str) -> Tuple[bool, str, Optional[float]]:
+        """验证50米跑成绩 (6.0 - 20.0秒)"""
+        return DataValidator.validate_time_input(value_str, min_value=6.0, max_value=20.0)
+
+    @staticmethod
+    def validate_run_1000m(minutes: int, seconds: int) -> Tuple[bool, str, Optional[float]]:
+        """验证1000米跑成绩"""
+        total_seconds = minutes * 60 + seconds
+        if total_seconds < 120: # 2分钟
+            return False, "成绩不能少于2分钟", None
+        if total_seconds > 600: # 10分钟
+            return False, "成绩不能超过10分钟", None
+        return True, "", float(total_seconds)
+        
+    @staticmethod
+    def validate_run_800m(minutes: int, seconds: int) -> Tuple[bool, str, Optional[float]]:
+        """验证800米跑成绩"""
+        total_seconds = minutes * 60 + seconds
+        if total_seconds < 100: # 1分40秒
+            return False, "成绩不能少于1分40秒", None
+        if total_seconds > 600: # 10分钟
+            return False, "成绩不能超过10分钟", None
+        return True, "", float(total_seconds)
+
+    @staticmethod
+    def validate_jump(value_str: str) -> Tuple[bool, str, Optional[float]]:
+        """验证立定跳远成绩 (100 - 400厘米)"""
+        return DataValidator.validate_distance_input(value_str, min_value=100.0, max_value=400.0)
+    
+    @staticmethod
+    def validate_pull_ups(value_str: str) -> Tuple[bool, str, Optional[int]]:
+        """验证引体向上成绩 (0 - 50次)"""
+        return DataValidator.validate_count_input(value_str, min_value=0, max_value=50)
+    
+    @staticmethod
+    def validate_sit_ups(value_str: str) -> Tuple[bool, str, Optional[int]]:
+        """验证仰卧起坐成绩 (0 - 100次)"""
+        return DataValidator.validate_count_input(value_str, min_value=0, max_value=100)
+    
+    @staticmethod
+    def validate_sit_reach(value_str: str) -> Tuple[bool, str, Optional[float]]:
+        """验证坐位体前屈成绩 (-20.0 - 40.0厘米)"""
+        # 注意：坐位体前屈允许负数
+        try:
+            val = float(value_str)
+            if val < -20.0 or val > 40.0:
+                 return False, "成绩应在 -20 到 40 厘米之间", None
+            return True, "", val
+        except ValueError:
+            return False, "请输入有效的数字", None
+
+    @staticmethod
     def _parse_time_to_seconds(time_str: str) -> float:
         """解析时间字符串为秒数"""
         if "'" in time_str and '"' in time_str:
@@ -136,3 +188,4 @@ class DataValidator:
         else:
             # 纯秒数
             return float(time_str)
+
