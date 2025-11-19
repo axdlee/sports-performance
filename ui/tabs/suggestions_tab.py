@@ -167,7 +167,16 @@ class SuggestionsTab:
             
         weakest_item = self.score_calculator.get_weakest_item(scores)
         if weakest_item:
-            weakest_name = PROJECT_NAMES.get(weakest_item, weakest_item)
+            # 获取类别的中文名称
+            if weakest_item == "required":
+                weakest_name = "必选项"
+            elif weakest_item == "category1":
+                weakest_name = "第一类选考"
+            elif weakest_item == "category2":
+                weakest_name = "第二类选考"
+            else:
+                weakest_name = PROJECT_NAMES.get(weakest_item, weakest_item)
+            
             score = scores[weakest_item]
             
             # 弱项标题
@@ -189,12 +198,13 @@ class SuggestionsTab:
                 s_frame = tk.Frame(self.weakness_frame, bg=THEME_COLORS["weak_bg"], padx=15, pady=10, relief=tk.FLAT)
                 s_frame.pack(fill=tk.X, pady=2)
                 
-                tk.Label(s_frame, text="•", font=FONTS["text_large"],
-                        bg=THEME_COLORS["weak_bg"], fg=self.THEME_DANGER).pack(side=tk.LEFT, anchor="n")
-                
-                tk.Label(s_frame, text=suggestion, font=FONTS["text_normal"],
+                # 使用 Text widget 避免竖排问题
+                text_widget = tk.Text(s_frame, height=3, font=FONTS["text_normal"],
                         bg=THEME_COLORS["weak_bg"], fg=self.THEME_TEXT_DARK,
-                        wraplength=500, justify=tk.LEFT).pack(side=tk.LEFT, padx=10)
+                        wrap=tk.WORD, relief=tk.FLAT, bd=0)
+                text_widget.insert("1.0", f"• {suggestion}")
+                text_widget.config(state=tk.DISABLED)  # 设置为只读
+                text_widget.pack(fill=tk.X)
         else:
             tk.Label(self.weakness_frame, text="暂无明显弱项，请继续保持全面发展！",
                     font=FONTS["text_normal"],
@@ -204,15 +214,15 @@ class SuggestionsTab:
         for widget in self.plan_frame.winfo_children():
             widget.destroy()
             
-        # 获取所有项目
-        all_projects = []
-        all_projects.append(list(record["required"].keys())[0])
-        all_projects.append(list(record["category1"].keys())[0])
-        all_projects.append(list(record["category2"].keys())[0])
+        # 获取所有项目及其得分
+        project_items = [
+            ("required", list(record["required"].keys())[0], scores["required"]),
+            ("category1", list(record["category1"].keys())[0], scores["category1"]),
+            ("category2", list(record["category2"].keys())[0], scores["category2"])
+        ]
         
-        for project in all_projects:
+        for category, project, score in project_items:
             project_name = PROJECT_NAMES.get(project, project)
-            score = scores.get(project, 0)
             
             # 项目容器
             p_frame = tk.Frame(self.plan_frame, bg=self.THEME_CARD, pady=10)
@@ -246,7 +256,7 @@ class SuggestionsTab:
             
             tk.Label(content_frame, text=plan_text, font=FONTS["text_small"],
                     bg=THEME_COLORS["bg"], fg=self.THEME_TEXT_DARK,
-                    justify=tk.LEFT, wraplength=500).pack(anchor="w")
+                    justify=tk.LEFT, wraplength=700).pack(anchor="w", fill=tk.X)
             
             # 分割线
             tk.Frame(self.plan_frame, bg=THEME_COLORS["border"], height=1).pack(fill=tk.X, pady=5)

@@ -194,7 +194,7 @@ class InputWindow:
         self.category1_var_value = tk.StringVar()
         self.category1_entry = tk.Entry(category1_frame, textvariable=self.category1_var_value, 
                                         width=15, font=INPUT_WINDOW_CONFIG["entry_font"],
-                                        relief=tk.SOLID, bd=1,
+                                        relief=tk.SOLID, bd=1, fg="#263238",
                                         highlightthickness=1, highlightcolor=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category1_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
@@ -229,7 +229,7 @@ class InputWindow:
         self.category2_var_value = tk.StringVar()
         self.category2_entry = tk.Entry(category2_frame, textvariable=self.category2_var_value, 
                                         width=15, font=INPUT_WINDOW_CONFIG["entry_font"],
-                                        relief=tk.SOLID, bd=1,
+                                        relief=tk.SOLID, bd=1, fg="#263238",
                                         highlightthickness=1, highlightcolor=INPUT_WINDOW_CONFIG["label_primary_color"])
         self.category2_entry.pack(anchor=tk.W, pady=(0, 8), ipady=3)
         
@@ -444,9 +444,11 @@ class InputWindow:
             score = self.score_calculator.calculate_score(self.user.gender, self.required_project, performance)
             
             self.required_score_var.set(f"得分: {score:.1f}")
+            self.update_total_score()  # 更新总分
             
         except Exception as e:
             self.required_score_var.set("得分: 输入错误")
+            self.update_total_score()  # 更新总分
     
     def _clamp_performance(self, project_key: str, performance: float) -> float:
         """将成绩值限制在评分标准范围内"""
@@ -497,9 +499,11 @@ class InputWindow:
             score = self.score_calculator.calculate_score(self.user.gender, project_key, performance)
             
             self.category1_score_var.set(f"得分: {score:.1f}")
+            self.update_total_score()  # 更新总分
             
         except Exception as e:
             self.category1_score_var.set("得分: 输入错误")
+            self.update_total_score()  # 更新总分
     
     def calculate_category2_score(self):
         """计算第二类选考得分"""
@@ -526,9 +530,11 @@ class InputWindow:
             score = self.score_calculator.calculate_score(self.user.gender, project_key, performance)
             
             self.category2_score_var.set(f"得分: {score:.1f}")
+            self.update_total_score()  # 更新总分
             
         except Exception as e:
             self.category2_score_var.set("得分: 输入错误")
+            self.update_total_score()  # 更新总分
     
     def update_total_score(self):
         """更新总分显示"""
