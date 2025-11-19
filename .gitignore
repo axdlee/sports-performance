@@ -48,3 +48,10 @@ desktop.ini
 *.bak
 *.backup
 *.old
+
+# AI Assistant
+/.spec-workflow/
+/.claude/
+/.codex/
+/.cursor/
+/.serena/
