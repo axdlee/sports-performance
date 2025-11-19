@@ -192,19 +192,24 @@ class SuggestionsTab:
                     bg=self.THEME_CARD, fg=self.THEME_TEXT_LIGHT).pack(side=tk.LEFT, padx=10)
             
             # 建议内容
-            suggestions = self.score_calculator.get_improvement_suggestions(weakest_item, score)
+            # 获取实际项目名称（如 "50m" 而不是 "category1"）
+            actual_project = weakest_item
+            if weakest_item in ["required", "category1", "category2"]:
+                actual_project = list(record[weakest_item].keys())[0]
             
-            for suggestion in suggestions:
-                s_frame = tk.Frame(self.weakness_frame, bg=THEME_COLORS["weak_bg"], padx=15, pady=10, relief=tk.FLAT)
-                s_frame.pack(fill=tk.X, pady=2)
-                
-                # 使用 Text widget 避免竖排问题
-                text_widget = tk.Text(s_frame, height=3, font=FONTS["text_normal"],
-                        bg=THEME_COLORS["weak_bg"], fg=self.THEME_TEXT_DARK,
-                        wrap=tk.WORD, relief=tk.FLAT, bd=0)
-                text_widget.insert("1.0", f"• {suggestion}")
-                text_widget.config(state=tk.DISABLED)  # 设置为只读
-                text_widget.pack(fill=tk.X)
+            # 获取建议（传递实际项目名和用户性别）
+            suggestion = self.score_calculator.get_improvement_suggestions(actual_project, self.user.gender)
+            
+            s_frame = tk.Frame(self.weakness_frame, bg=THEME_COLORS["weak_bg"], padx=15, pady=10, relief=tk.FLAT)
+            s_frame.pack(fill=tk.X, pady=2)
+            
+            # 使用 Text widget 显示建议
+            text_widget = tk.Text(s_frame, height=4, font=FONTS["text_normal"],
+                    bg=THEME_COLORS["weak_bg"], fg=self.THEME_TEXT_DARK,
+                    wrap=tk.WORD, relief=tk.FLAT, bd=0)
+            text_widget.insert("1.0", f"• {suggestion}")
+            text_widget.config(state=tk.DISABLED)  # 设置为只读
+            text_widget.pack(fill=tk.X)
         else:
             tk.Label(self.weakness_frame, text="暂无明显弱项，请继续保持全面发展！",
                     font=FONTS["text_normal"],
