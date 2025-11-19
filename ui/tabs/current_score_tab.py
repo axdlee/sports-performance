@@ -320,13 +320,25 @@ class CurrentScoreTab:
         weakest = self.score_calculator.get_weakest_item(scores)
         
         if strongest:
-            strongest_name = PROJECT_NAMES.get(strongest, strongest)
+            # 获取实际项目名称
+            if strongest in ["required", "category1", "category2"]:
+                actual_project = list(record[strongest].keys())[0]
+                strongest_name = PROJECT_NAMES.get(actual_project, actual_project)
+            else:
+                strongest_name = PROJECT_NAMES.get(strongest, strongest)
+                
             self.strongest_var.set(f"{strongest_name} ({scores[strongest]:.1f}分)")
         else:
             self.strongest_var.set("--")
         
         if weakest:
-            weakest_name = PROJECT_NAMES.get(weakest, weakest)
+            # 获取实际项目名称
+            if weakest in ["required", "category1", "category2"]:
+                actual_project = list(record[weakest].keys())[0]
+                weakest_name = PROJECT_NAMES.get(actual_project, actual_project)
+            else:
+                weakest_name = PROJECT_NAMES.get(weakest, weakest)
+                
             self.weakest_var.set(f"{weakest_name} ({scores[weakest]:.1f}分)")
         else:
             self.weakest_var.set("--")
